@@ -10,7 +10,7 @@ class GalleryView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final files = ref.watch(filesProvider).list;
+    final files = ref.watch(filesProvider.select((value) => value.list));
     return GridView.builder(
       gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: numColumn),

@@ -20,18 +20,22 @@ class PhotoView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFileViewModel = ref.read(selectedFileProvider);
+    debugPrint("build: PhotoView($idx)");
+    bool selected = ref.watch(
+        filesProvider.select((value) => value.selectedFile?.path == src.path));
 
     return Container(
       padding: const EdgeInsets.all(10),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: primaryColor,
-        borderRadius: BorderRadius.all(
+        border: Border.all(
+            width: 1.0, color: selected ? Colors.redAccent : Colors.white70),
+        borderRadius: const BorderRadius.all(
           Radius.circular(5),
         ),
       ),
       child: GestureDetector(
-        onTap: () => selectedFileViewModel.update(src, idx),
+        onTap: () => ref.read(filesProvider).select(idx),
         child: Image.file(src, width: width, height: height),
       ),
     );

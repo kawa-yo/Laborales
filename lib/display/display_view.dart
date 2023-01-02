@@ -7,12 +7,9 @@ class DisplayView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFileViewModel = ref.watch(selectedFileProvider);
-    final file = selectedFileViewModel.file;
-    // final idx = selectedFileViewModel.idx;
+    final file = ref.watch(filesProvider.select((value) => value.selectedFile));
     final image = file != null ? Image.file(file) : const Icon(Icons.image);
 
-    // final files = ref.watch(filesProvider).list;
     return Container(
       padding: const EdgeInsets.all(10),
       child: FittedBox(
@@ -20,5 +17,26 @@ class DisplayView extends ConsumerWidget {
         child: image,
       ),
     );
+    // final image = file != null
+    //     ? Image.file(file, width: double.infinity, fit: BoxFit.contain)
+    //     : const Icon(Icons.image, size: 300);
+    // final label = file != null
+    //     ? Text(file.path, style: TextStyle(fontSize: 20))
+    //     : Container();
+    // return Container(
+    //   padding: const EdgeInsets.all(10),
+    //   // child: FittedBox(
+    //   //   fit: BoxFit.contain,
+    //   //   child: image,
+    //   // ),
+    //   child: Column(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       image,
+    //       label,
+    //       const SizedBox(height: 10),
+    //     ],
+    //   ),
+    // );
   }
 }

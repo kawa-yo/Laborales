@@ -11,21 +11,23 @@ class FileTreeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var viewModel = ref.watch(fileTreeProvider);
-    var filesViewModel = ref.watch(filesProvider);
     return Scaffold(
       body: TreeView(
         controller: viewModel.controller,
         theme: treeViewTheme,
+        onNodeTap: (key) => ref.read(filesProvider).selectByPath(key),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.search),
-        onPressed: () async {
-          await viewModel.setNewRoot();
-          filesViewModel.clear();
-          var files = viewModel.dfsOnTree;
-          if (files.isNotEmpty) {
-            filesViewModel.addAll(files);
-          }
+        onPressed: () {
+          viewModel.setNewRoot().then((_) {
+            var files = viewModel.dfsOnTree;
+            if (files.isNotEmpty) {
+              ref.read(filesProvider)
+                ..update(files)
+                ..select(0);
+            }
+          });
         },
       ),
     );
