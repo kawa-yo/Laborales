@@ -13,11 +13,11 @@ bool isImagePath(String path) {
   return imageExtension.any((ext) => lower.endsWith(ext));
 }
 
-Stream<FSE> dfsOnFileSystem(Directory dir) async* {
+Stream<FSE> bfsOnFileSystem(Directory dir) async* {
   final Q = Queue<FSE>();
   Q.addLast(dir);
   while (Q.isNotEmpty) {
-    final fse = Q.removeLast();
+    final fse = Q.removeFirst();
     if (FSE.isLinkSync(fse.path)) {
       debugPrint("symlink: ${fse} is skipped");
       continue;
@@ -28,7 +28,8 @@ Stream<FSE> dfsOnFileSystem(Directory dir) async* {
 
     yield fse;
     if (fse is Directory) {
-      for (final child in fse.listSync()) {
+      for (final child in fse.listSync()
+        ..sort((a, b) => a.path.compareTo(b.path))) {
         Q.addLast(child);
       }
     }

@@ -34,6 +34,14 @@ class FileTreeViewModel extends ChangeNotifier {
 
   FileTreeViewModel() : controller = TreeViewController();
 
+  void onExpansion(String key, bool expanded) {
+    var node = controller.getNode(key);
+    if (node == null) return;
+    controller =
+        controller.withUpdateNode(key, node.copyWith(expanded: expanded));
+    notifyListeners();
+  }
+
   Iterable<File> get dfsOnTree sync* {
     var stack = <Node>[root];
     while (stack.isNotEmpty) {
@@ -41,13 +49,13 @@ class FileTreeViewModel extends ChangeNotifier {
       if (FSE.isFileSync(node.key)) {
         yield File(node.key);
       } else {
-        stack.addAll(node.children);
+        stack.addAll(node.children.reversed);
       }
     }
   }
 
   Future<void> _loadFiles(Directory rootDir) async {
-    final files = dfsOnFileSystem(rootDir);
+    final files = bfsOnFileSystem(rootDir);
     final nodes = files.map((fse) => NodeExt.fromFSE(
           fse,
           icon: fse is File ? Icons.image : null,

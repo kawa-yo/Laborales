@@ -11,4 +11,5 @@ const treeViewTheme = TreeViewTheme(
   ),
   labelOverflow: TextOverflow.fade,
   parentLabelOverflow: TextOverflow.fade,
+  expanderTheme: ExpanderThemeData(),
 );

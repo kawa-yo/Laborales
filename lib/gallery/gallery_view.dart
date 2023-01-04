@@ -19,10 +19,7 @@ class GalleryView extends ConsumerWidget {
       itemCount: files.length,
       itemBuilder: (context, idx) => AspectRatio(
         aspectRatio: 1.0,
-        child: FittedBox(
-          fit: BoxFit.cover,
-          child: PhotoView(files[idx], idx: idx),
-        ),
+        child: PhotoView(files[idx], idx: idx),
       ),
     );
   }
