@@ -22,11 +22,11 @@ Stream<FSE> bfsOnFileSystem(Directory dir) async* {
       debugPrint("symlink: ${fse} is skipped");
       continue;
     }
-    if (fse is File && !isImagePath(fse.path)) {
-      continue;
+
+    if (fse is File && isImagePath(fse.path)) {
+      yield fse;
     }
 
-    yield fse;
     if (fse is Directory) {
       for (final child in fse.listSync()
         ..sort((a, b) => a.path.compareTo(b.path))) {
@@ -34,6 +34,21 @@ Stream<FSE> bfsOnFileSystem(Directory dir) async* {
       }
     }
   }
+}
+
+Future<List<FSE>> dfsOnFileSystem(FSE fse) async {
+  throw UnimplementedError();
+  if (fse is File && isImagePath(fse.path)) {
+    return [fse];
+  }
+  if (fse is Directory) {
+    var list = <FSE>[];
+    for (var child in fse.listSync()
+      ..sort((a, b) => a.path.compareTo(b.path))) {
+      list.addAll(await dfsOnFileSystem(child));
+    }
+  }
+  return [];
 }
 
 Future<Directory?> pickDirectory() async {

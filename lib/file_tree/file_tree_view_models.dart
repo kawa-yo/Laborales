@@ -10,10 +10,10 @@ typedef FSE = FileSystemEntity;
 extension NodeExt on Node {
   static Node fromFSE(
     FSE fse, {
-    IconData? icon,
     bool expanded = false,
   }) {
     var name = fse.path.split("/").last;
+    var icon = fse is File ? Icons.image : null;
     return Node(
       key: fse.path,
       label: name,
@@ -56,11 +56,19 @@ class FileTreeViewModel extends ChangeNotifier {
 
   Future<void> _loadFiles(Directory rootDir) async {
     final files = bfsOnFileSystem(rootDir);
-    final nodes = files.map((fse) => NodeExt.fromFSE(
-          fse,
-          icon: fse is File ? Icons.image : null,
-        ));
+    final nodes = files.map((fse) => NodeExt.fromFSE(fse));
     await _addNodes(nodes);
+  }
+
+  void _makeParents(Node node) {
+    var parent = Directory(node.key).parent;
+    var parentNode = NodeExt.fromFSE(parent);
+
+    if (controller.getNode(parentNode.key) != null) {
+      return;
+    }
+    _makeParents(parentNode);
+    controller = controller.withAddNode(parent.parent.path, parentNode);
   }
 
   Future<void> _addNodes(Stream<Node> nodes, {int updateCount = 1000}) async {
@@ -68,6 +76,7 @@ class FileTreeViewModel extends ChangeNotifier {
     await for (var node in nodes) {
       int last = node.key.lastIndexOf("/");
       var parentKey = node.key.substring(0, last);
+      _makeParents(node);
       controller = controller.withAddNode(parentKey, node);
 
       if (++cnt % updateCount == 0) {

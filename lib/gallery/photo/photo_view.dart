@@ -25,11 +25,10 @@ class PhotoView extends ConsumerWidget {
         filesProvider.select((value) => value.selectedFile?.path == src.path));
 
     return Container(
-      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: primaryColor,
+        color: Colors.grey[50],
         border: Border.all(
-            width: 1.0, color: selected ? Colors.redAccent : Colors.white70),
+            width: 3.0, color: selected ? Colors.redAccent : Colors.grey[500]!),
         borderRadius: const BorderRadius.all(
           Radius.circular(5),
         ),
