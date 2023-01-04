@@ -17,7 +17,7 @@ class RootView extends StatelessWidget {
         gripColor: splitViewGripColor,
         gripColorActive: splitViewGripColorActivate,
         controller: SplitViewController(weights: [.2, .5, .3]),
-        children: [
+        children: const [
           FileTreeView(),
           DisplayView(),
           GalleryView(),
