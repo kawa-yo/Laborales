@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laborales/gallery/gallery_view_model.dart';
 import 'package:laborales/gallery/photo/photo_view.dart';
-import 'package:laborales/root/root_view_model.dart';
 
 class GalleryView extends ConsumerWidget {
   final int numColumn = 5;

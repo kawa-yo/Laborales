@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/root/root_view_model.dart';
+import 'package:laborales/gallery/gallery_view_model.dart';
 
 class DisplayView extends ConsumerWidget {
   const DisplayView({super.key});
