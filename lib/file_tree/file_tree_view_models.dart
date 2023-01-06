@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:laborales/file_tree/file_tree_model.dart';
+import 'package:laborales/gallery/gallery_view_model.dart';
+import 'package:laborales/launcher/launcher_view_model.dart';
+import 'package:laborales/root/root_view_model.dart';
 
 typedef FSE = FileSystemEntity;
 
@@ -29,10 +32,31 @@ class FileTreeViewModel extends ChangeNotifier {
   TreeViewController controller;
   final bool autoLoading = true;
 
-  Node get root => controller.children.first;
+  Node? get root =>
+      controller.children.isNotEmpty ? controller.children.first : null;
   Node? get selectedNode => controller.selectedNode;
 
   FileTreeViewModel() : controller = TreeViewController();
+
+  Future<bool> initialize(WidgetRef ref) async {
+    var project = ref.watch(rootProvider).project;
+    if (project == null) {
+      return false;
+    }
+    var rootNode = NodeExt.fromFSE(project.targetDir, expanded: true);
+    var prevRoot = root;
+    if (prevRoot != null && prevRoot.key == rootNode.key) {
+      return false;
+    }
+    await setRoot(rootNode);
+    var files = dfsOnTree;
+    if (files.isNotEmpty) {
+      ref.read(filesProvider)
+        ..update(files)
+        ..select(0);
+    }
+    return true;
+  }
 
   void onExpansion(String key, bool expanded) {
     var node = controller.getNode(key);
@@ -43,7 +67,8 @@ class FileTreeViewModel extends ChangeNotifier {
   }
 
   Iterable<File> get dfsOnTree sync* {
-    var stack = <Node>[root];
+    if (root == null) return;
+    var stack = <Node>[root!];
     while (stack.isNotEmpty) {
       var node = stack.removeLast();
       if (FSE.isFileSync(node.key)) {
@@ -88,19 +113,15 @@ class FileTreeViewModel extends ChangeNotifier {
     debugPrint("done");
   }
 
-  Future<void> setNewRoot() async {
-    var dir = await pickDirectory();
-    if (dir != null) {
-      var root = NodeExt.fromFSE(dir, expanded: true);
-      controller = TreeViewController(
-        children: [root],
-        selectedKey: dir.path,
-      );
-      notifyListeners();
-      if (autoLoading) {
-        await _loadFiles(dir);
-      }
-      debugPrint("set new root to $dir");
+  Future<void> setRoot(Node root) async {
+    controller = TreeViewController(
+      children: [root],
+    );
+    notifyListeners();
+    var dir = Directory(root.key);
+    if (autoLoading) {
+      await _loadFiles(dir);
     }
+    debugPrint("set new root to $dir");
   }
 }

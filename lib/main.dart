@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:laborales/launcher/launcher_view.dart';
 import 'package:laborales/repository/preferences.dart';
 import 'package:laborales/root/root_view.dart';
 import 'package:laborales/themes/theme.dart';
@@ -10,6 +12,7 @@ void main() {
 
 Future<void> initialization() async {
   await loadPreferences();
+  initializeDateFormatting("ja_JP");
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +29,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) => !snapshot.hasData &&
                 snapshot.connectionState != ConnectionState.done
             ? const Center(child: FlutterLogo(size: 300))
-            : const RootView(),
+            : const LauncherView(),
       ),
     );
   }
