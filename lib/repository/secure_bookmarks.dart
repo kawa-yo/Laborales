@@ -8,6 +8,7 @@ final _secureBookmarks = SecureBookmarks();
 
 Future<T> ensureToOpen<T extends FSE>(T fse) async {
   var bookmark = await _secureBookmarks.bookmark(fse);
+
   return fse;
 }
 

@@ -9,39 +9,62 @@ const prefix = "laborales/projects";
 
 Future<List<Project>> loadProjectsFromPrefs() async {
   var projectNames = prefs.getStringList("$prefix/project_list");
+  debugPrint("load projects from prefs: $projectNames");
   if (projectNames == null) {
     return [];
   }
 
   var list = <Project>[];
   for (var name in projectNames) {
-    var saveFilePath = prefs.getString("$prefix/$name/project_file");
-    var targetPath = prefs.getString("$prefix/$name/target_directory");
-    if (saveFilePath == null || targetPath == null) {
+    var saveFileBookmark =
+        prefs.getString("$prefix/$name/project_file_bookmark");
+    var targetDirBookmark =
+        prefs.getString("$prefix/$name/target_directory_bookmark");
+
+    debugPrint("project [$name]:");
+    debugPrint("  project_file_bookmark: $saveFileBookmark");
+    debugPrint("  target_dir_bookmark  : $targetDirBookmark");
+
+    if (saveFileBookmark == null || targetDirBookmark == null) {
+      /// remove the project from prefs.
+      prefs.remove("$prefix/$name");
+      var removed = projectNames..remove(name);
+      prefs.setStringList("$prefix/project_list", removed);
       continue;
     }
-    var saveFile = await ensureToOpen(File(saveFilePath));
-    var targetDir = await ensureToOpen(Directory(targetPath));
-    list.add(Project(name: name, targetDir: targetDir, saveFile: saveFile));
+
+    var saveFile = await resolveFileFrom(saveFileBookmark);
+    debugPrint("saveFile's bookmark resolved.");
+    var targetDir = await resolveDirectoryFrom(targetDirBookmark);
+    debugPrint("targetDir's bookmark resolved.");
+
+    debugPrint("project [$name]:");
+    debugPrint("  project file    : $saveFile");
+    debugPrint("  target directory: $targetDir");
+
+    list.add(Project(
+      name: name,
+      targetDir: targetDir,
+      saveFile: saveFile,
+    ));
   }
   return list;
 }
 
 Future<void> saveProjectToPrefs(Project project) async {
-  // var bookmark = await getBookmarkOf(project.saveFile);
+  var saveFileBookmark = await getBookmarkOf(project.saveFile);
+  var targetDirBookmark = await getBookmarkOf(project.targetDir);
   var existingProjects = prefs.getStringList("$prefix/project_list") ?? [];
   if (existingProjects.contains(project.name)) {
     debugPrint("project: ${project.name} already exists in preferences");
     return;
   }
   prefs.setStringList(
-    "$prefix/project_list",
-    [...existingProjects, project.name],
-  );
+      "$prefix/project_list", [...existingProjects, project.name]);
   prefs.setString(
-      "$prefix/${project.name}/project_file", project.saveFile.path);
+      "$prefix/${project.name}/project_file_bookmark", saveFileBookmark);
   prefs.setString(
-      "$prefix/${project.name}/target_directory", project.targetDir.path);
+      "$prefix/${project.name}/target_directory_bookmark", targetDirBookmark);
 }
 
 Future<File> projectSaveFile(String projectName) async {

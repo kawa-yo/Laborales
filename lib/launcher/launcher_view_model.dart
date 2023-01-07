@@ -48,11 +48,14 @@ class LauncherViewModel extends ChangeNotifier {
 
   LauncherViewModel() : _projectList = [];
 
-  Future<void> initialize() async {
+  Future<bool> initialize() async {
+    debugPrint("initialize laucherviewmodel");
     _projectList = await loadProjectsFromPrefs();
     _projectList.sort((p1, p2) => p2.saveFile
         .lastModifiedSync()
         .compareTo(p1.saveFile.lastModifiedSync()));
+    debugPrint("projects: $_projectList");
+    return true;
     // notifyListeners();
   }
 

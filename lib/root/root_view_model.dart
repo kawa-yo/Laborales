@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/launcher/launcher_view_model.dart';
 
-final rootProvider = ChangeNotifierProvider((ref) => RootViewModel());
+final rootProvider = Provider((ref) => RootViewModel());
 
-class RootViewModel extends ChangeNotifier {
+class RootViewModel {
   Project? _project;
   Project? get project => _project;
 
@@ -14,6 +14,5 @@ class RootViewModel extends ChangeNotifier {
 
   void updateProject(Project? p) {
     _project = p;
-    // notifyListeners();
   }
 }
