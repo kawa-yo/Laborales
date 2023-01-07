@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:laborales/display/display_view.dart';
-import 'package:laborales/file_tree/file_tree_view.dart';
+import 'package:laborales/gallery/file_grid/file_grid_view.dart';
+import 'package:laborales/gallery/file_tree/file_tree_view.dart';
 import 'package:laborales/gallery/gallery_view.dart';
 import 'package:laborales/themes/split_view_theme.dart';
 import 'package:split_view/split_view.dart';
@@ -8,7 +9,10 @@ import 'package:split_view/split_view.dart';
 class RootView extends StatelessWidget {
   final destinations = [
     const NavigationRailDestination(
-      icon: Icon(Icons.keyboard_arrow_left_sharp),
+      icon: Tooltip(
+        message: "Back",
+        child: Icon(Icons.keyboard_arrow_left_sharp),
+      ),
       label: Text("go back"),
     ),
     const NavigationRailDestination(
@@ -51,6 +55,7 @@ class RootView extends StatelessWidget {
       body: Row(
         children: [
           NavigationRail(
+            labelType: NavigationRailLabelType.selected,
             destinations: destinations,
             selectedIndex: 1,
             onDestinationSelected: (idx) => onDestinationSelected(context, idx),
@@ -61,11 +66,10 @@ class RootView extends StatelessWidget {
               gripSize: splitViewGripSize,
               gripColor: splitViewGripColor,
               gripColorActive: splitViewGripColorActivate,
-              controller: SplitViewController(weights: [.2, .5, .3]),
+              controller: SplitViewController(weights: [.3, .7]),
               children: const [
-                FileTreeView(),
-                DisplayView(),
                 GalleryView(),
+                DisplayView(),
               ],
             ),
           ),

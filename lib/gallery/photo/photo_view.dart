@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/gallery/gallery_view_model.dart';
+import 'package:laborales/gallery/file_grid/file_grid_view_model.dart';
 
 class PhotoView extends ConsumerWidget {
   final File src;

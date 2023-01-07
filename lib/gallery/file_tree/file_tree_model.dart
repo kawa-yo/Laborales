@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:laborales/file_tree/file_tree_view_models.dart';
+import 'package:laborales/gallery/file_tree/file_tree_view_models.dart';
 import 'package:laborales/repository/secure_bookmarks.dart';
 
 const imageExtension = [".png", ".jpg", ".jpeg"];

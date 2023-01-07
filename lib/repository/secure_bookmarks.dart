@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:laborales/file_tree/file_tree_view_models.dart';
-import 'package:laborales/repository/preferences.dart';
+import 'package:laborales/gallery/file_tree/file_tree_view_models.dart';
 import 'package:macos_secure_bookmarks/macos_secure_bookmarks.dart';
 
 final _secureBookmarks = SecureBookmarks();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/file_tree/file_tree_view_models.dart';
+import 'package:laborales/gallery/file_tree/file_tree_view_models.dart';
 import 'package:laborales/launcher/launcher_view_model.dart';
 import 'package:laborales/launcher/project_builder/project_builder_view.dart';
 import 'package:laborales/root/root_view.dart';
