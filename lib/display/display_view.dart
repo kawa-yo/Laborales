@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/gallery/file_grid/file_grid_view_model.dart';
+import 'package:laborales/gallery/photo/photo_view_model.dart';
 import 'package:laborales/root/root_view_model.dart';
 
 class DisplayView extends ConsumerWidget {
@@ -8,16 +9,17 @@ class DisplayView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final file =
-        ref.watch(fileGridProvider.select((value) => value.selectedFile));
+    final photo =
+        ref.watch(photosProvider.select((value) => value.selectedPhoto));
     Widget image = const Icon(Icons.image, size: 300);
     Widget label = Container();
-    if (file != null) {
+    if (photo != null) {
       var _dirname =
           ref.watch(rootProvider).project!.targetDir.path.split("/").last;
-      var _start = file.path.indexOf(_dirname);
-      var caption = file.path.substring(_start);
-      image = Image.file(file, width: double.infinity, fit: BoxFit.contain);
+      var _start = photo.src.path.indexOf(_dirname);
+      var caption = photo.src.path.substring(_start);
+      image =
+          Image.file(photo.src, width: double.infinity, fit: BoxFit.contain);
       label = Text(
         caption,
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),

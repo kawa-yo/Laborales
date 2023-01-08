@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:laborales/gallery/file_grid/file_grid_view_model.dart';
 import 'package:laborales/gallery/file_tree/file_tree_model.dart';
+import 'package:laborales/gallery/photo/photo_view_model.dart';
 import 'package:laborales/root/root_view_model.dart';
 
 typedef FSE = FileSystemEntity;
@@ -52,7 +53,7 @@ class FileTreeViewModel extends ChangeNotifier {
     await setRoot(rootNode);
     var files = dfsOnTree;
     if (files.isNotEmpty) {
-      ref.read(fileGridProvider)
+      ref.read(photosProvider)
         ..update(files)
         ..select(0);
     }
@@ -67,13 +68,14 @@ class FileTreeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Iterable<File> get dfsOnTree sync* {
+  Iterable<Photo> get dfsOnTree sync* {
     if (root == null) return;
     var stack = <Node>[root!];
+    int cnt = 0;
     while (stack.isNotEmpty) {
       var node = stack.removeLast();
       if (FSE.isFileSync(node.key)) {
-        yield File(node.key);
+        yield Photo(File(node.key), idx: cnt++);
       } else {
         stack.addAll(node.children.reversed);
       }

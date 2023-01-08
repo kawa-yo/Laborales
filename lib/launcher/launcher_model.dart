@@ -21,10 +21,6 @@ Future<List<Project>> loadProjectsFromPrefs() async {
     var targetDirBookmark =
         prefs.getString("$prefix/$name/target_directory_bookmark");
 
-    debugPrint("project [$name]:");
-    debugPrint("  project_file_bookmark: $saveFileBookmark");
-    debugPrint("  target_dir_bookmark  : $targetDirBookmark");
-
     if (saveFileBookmark == null || targetDirBookmark == null) {
       /// remove the project from prefs.
       prefs.remove("$prefix/$name");
@@ -34,9 +30,7 @@ Future<List<Project>> loadProjectsFromPrefs() async {
     }
 
     var saveFile = await resolveFileFrom(saveFileBookmark);
-    debugPrint("saveFile's bookmark resolved.");
     var targetDir = await resolveDirectoryFrom(targetDirBookmark);
-    debugPrint("targetDir's bookmark resolved.");
 
     debugPrint("project [$name]:");
     debugPrint("  project file    : $saveFile");

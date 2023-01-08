@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final fileGridProvider = ChangeNotifierProvider(((ref) => FileGridViewModel()));
+import 'package:laborales/gallery/photo/photo_view_model.dart';
 
 class SingleIncrementSelectionIntent extends Intent {
   final int increment;
@@ -16,24 +15,15 @@ class MultiIncrementSelectionIntent extends Intent {
   const MultiIncrementSelectionIntent(this.increment);
 }
 
+final fileGridProvider =
+    ChangeNotifierProvider(((ref) => FileGridViewModel(ref)));
+
 class FileGridViewModel extends ChangeNotifier {
   /// finalにすると，要素を出し入れしてもhashCodeが変わらないから，変更が監視されない
-  List<File> _list;
-  int? _selectedIdx;
   int _numColumn = 5;
+  final Ref ref;
 
-  List<File> get list => _list;
-  File? get selectedFile {
-    int? idx = _selectedIdx;
-    if (idx != null && idx < _list.length) {
-      return _list[idx];
-    }
-    if (_list.isNotEmpty) {
-      _selectedIdx = 0;
-      return _list.first;
-    }
-    return null;
-  }
+  FileGridViewModel(this.ref);
 
   int get numColumn => _numColumn;
 
@@ -50,43 +40,13 @@ class FileGridViewModel extends ChangeNotifier {
   Map<Type, Action> get actions => {
         SingleIncrementSelectionIntent:
             CallbackAction<SingleIncrementSelectionIntent>(
-                onInvoke: (intent) => incrementSelection(intent.increment)),
+                onInvoke: (intent) => ref
+                    .read(photosProvider)
+                    .incrementSelection(intent.increment)),
         MultiIncrementSelectionIntent:
             CallbackAction<MultiIncrementSelectionIntent>(
-                onInvoke: (intent) =>
-                    incrementSelection(intent.increment * numColumn)),
+                onInvoke: (intent) => ref
+                    .read(photosProvider)
+                    .incrementSelection(intent.increment * numColumn)),
       };
-
-  FileGridViewModel()
-      : _list = [],
-        _selectedIdx = null;
-
-  void incrementSelection(int increment) {
-    if (_selectedIdx == null) {
-      return;
-    }
-    int idx = _selectedIdx! + increment;
-    if (idx < 0 || idx >= _list.length) {
-      return;
-    }
-    select(idx);
-  }
-
-  void select(int idx) {
-    _selectedIdx = idx;
-    notifyListeners();
-  }
-
-  void selectByPath(String path) {
-    int idx = _list.indexWhere((e) => e.path == path);
-    if (idx != -1) {
-      _selectedIdx = idx;
-      notifyListeners();
-    }
-  }
-
-  void update(Iterable<File> files) {
-    _list = files.toList();
-    notifyListeners();
-  }
 }
