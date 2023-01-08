@@ -1,15 +1,26 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final filesProvider =
-    ChangeNotifierProvider<FilesViewModel>(((ref) => FilesViewModel()));
+final fileGridProvider = ChangeNotifierProvider(((ref) => FileGridViewModel()));
 
-class FilesViewModel extends ChangeNotifier {
+class SingleIncrementSelectionIntent extends Intent {
+  final int increment;
+  const SingleIncrementSelectionIntent(this.increment);
+}
+
+class MultiIncrementSelectionIntent extends Intent {
+  final int increment;
+  const MultiIncrementSelectionIntent(this.increment);
+}
+
+class FileGridViewModel extends ChangeNotifier {
   /// finalにすると，要素を出し入れしてもhashCodeが変わらないから，変更が監視されない
   List<File> _list;
   int? _selectedIdx;
+  int _numColumn = 5;
 
   List<File> get list => _list;
   File? get selectedFile {
@@ -24,9 +35,42 @@ class FilesViewModel extends ChangeNotifier {
     return null;
   }
 
-  FilesViewModel()
+  int get numColumn => _numColumn;
+
+  final shortcuts = {
+    const SingleActivator(LogicalKeyboardKey.arrowLeft):
+        const SingleIncrementSelectionIntent(-1),
+    const SingleActivator(LogicalKeyboardKey.arrowRight):
+        const SingleIncrementSelectionIntent(1),
+    const SingleActivator(LogicalKeyboardKey.arrowUp):
+        const MultiIncrementSelectionIntent(-1),
+    const SingleActivator(LogicalKeyboardKey.arrowDown):
+        const MultiIncrementSelectionIntent(1),
+  };
+  Map<Type, Action> get actions => {
+        SingleIncrementSelectionIntent:
+            CallbackAction<SingleIncrementSelectionIntent>(
+                onInvoke: (intent) => incrementSelection(intent.increment)),
+        MultiIncrementSelectionIntent:
+            CallbackAction<MultiIncrementSelectionIntent>(
+                onInvoke: (intent) =>
+                    incrementSelection(intent.increment * numColumn)),
+      };
+
+  FileGridViewModel()
       : _list = [],
         _selectedIdx = null;
+
+  void incrementSelection(int increment) {
+    if (_selectedIdx == null) {
+      return;
+    }
+    int idx = _selectedIdx! + increment;
+    if (idx < 0 || idx >= _list.length) {
+      return;
+    }
+    select(idx);
+  }
 
   void select(int idx) {
     _selectedIdx = idx;

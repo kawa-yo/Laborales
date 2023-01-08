@@ -14,7 +14,7 @@ class FileTreeView extends ConsumerWidget {
     return TreeView(
       controller: viewModel.controller,
       theme: treeViewTheme,
-      onNodeTap: (key) => ref.read(filesProvider).selectByPath(key),
+      onNodeTap: (key) => ref.read(fileGridProvider).selectByPath(key),
       onExpansionChanged: viewModel.onExpansion,
     );
   }

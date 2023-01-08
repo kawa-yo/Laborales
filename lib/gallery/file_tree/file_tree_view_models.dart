@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:laborales/gallery/file_grid/file_grid_view_model.dart';
@@ -29,6 +30,7 @@ final fileTreeProvider = ChangeNotifierProvider((ref) => FileTreeViewModel());
 
 class FileTreeViewModel extends ChangeNotifier {
   TreeViewController controller;
+
   final bool autoLoading = true;
 
   Node? get root =>
@@ -50,7 +52,7 @@ class FileTreeViewModel extends ChangeNotifier {
     await setRoot(rootNode);
     var files = dfsOnTree;
     if (files.isNotEmpty) {
-      ref.read(filesProvider)
+      ref.read(fileGridProvider)
         ..update(files)
         ..select(0);
     }

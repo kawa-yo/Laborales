@@ -8,7 +8,8 @@ class DisplayView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final file = ref.watch(filesProvider.select((value) => value.selectedFile));
+    final file =
+        ref.watch(fileGridProvider.select((value) => value.selectedFile));
     Widget image = const Icon(Icons.image, size: 300);
     Widget label = Container();
     if (file != null) {

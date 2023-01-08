@@ -13,15 +13,15 @@ class PhotoView extends ConsumerWidget {
     this.src, {
     super.key,
     required this.idx,
-    this.width = 100,
-    this.height = 100,
+    this.width = 50,
+    this.height = 50,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // debugPrint("build: PhotoView($idx)");
-    bool selected = ref.watch(
-        filesProvider.select((value) => value.selectedFile?.path == src.path));
+    bool selected = ref.watch(fileGridProvider
+        .select((value) => value.selectedFile?.path == src.path));
 
     return Container(
       decoration: BoxDecoration(
@@ -33,7 +33,7 @@ class PhotoView extends ConsumerWidget {
         ),
       ),
       child: GestureDetector(
-        onTap: () => ref.read(filesProvider).select(idx),
+        onTap: () => ref.read(fileGridProvider).select(idx),
         child: FittedBox(
           fit: BoxFit.fill,
           child: Image.file(src, width: width, height: height),
