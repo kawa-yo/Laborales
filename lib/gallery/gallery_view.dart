@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:laborales/gallery/file_grid/file_grid_view.dart';
+import 'package:laborales/gallery/file_semi_grid/file_semi_grid_view.dart';
 import 'package:laborales/gallery/file_tree/file_tree_view.dart';
 import 'package:laborales/themes/theme.dart';
 
@@ -43,7 +44,7 @@ class GalleryView extends StatelessWidget {
                 controller: controller,
                 children: const [
                   FileTreeView(),
-                  Text("semi grid"),
+                  FileSemiGridView(),
                   FileGridView(),
                 ],
               ),
