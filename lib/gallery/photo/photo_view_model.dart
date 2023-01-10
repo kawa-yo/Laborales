@@ -7,29 +7,29 @@ import 'package:laborales/gallery/photo/photo_view.dart';
 class Photo {
   final File src;
   final int idx;
-  String label;
 
-  Photo(this.src, {required this.idx}) : label = "";
+  Photo(this.src, {required this.idx});
 
   @override
   bool operator ==(Object other) =>
-      other is Photo &&
-      src.path == other.src.path &&
-      label == other.label &&
-      idx == other.idx;
+      other is Photo && src.path == other.src.path && idx == other.idx;
   @override
-  int get hashCode => Object.hash(src.path, idx, label);
+  int get hashCode => Object.hash(src.path, idx);
 }
 
 final photosProvider = ChangeNotifierProvider(((ref) => PhotoViewModel()));
 
 class PhotoViewModel extends ChangeNotifier {
+  Map<Photo, String> _photo2label;
   List<Photo> _list;
   int? _selectedIdx;
 
-  PhotoViewModel() : _list = [];
+  PhotoViewModel()
+      : _list = [],
+        _photo2label = {};
 
   List<Photo> get list => _list;
+  // Map<Photo, String> get photo2label => _photo2label;
 
   Photo? get selectedPhoto {
     int? idx = _selectedIdx;
@@ -41,6 +41,11 @@ class PhotoViewModel extends ChangeNotifier {
       return _list.first;
     }
     return null;
+  }
+
+  String labelOf(Photo? photo) {
+    var label = _photo2label[photo];
+    return label ?? "";
   }
 
   void incrementSelection(int increment) {
@@ -69,6 +74,11 @@ class PhotoViewModel extends ChangeNotifier {
 
   void update(Iterable<Photo> photos) {
     _list = photos.toList();
+    notifyListeners();
+  }
+
+  void setLabel(Photo photo, String label) {
+    _photo2label[photo] = label;
     notifyListeners();
   }
 }

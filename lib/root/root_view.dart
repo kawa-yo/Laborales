@@ -3,6 +3,7 @@ import 'package:laborales/display/display_view.dart';
 import 'package:laborales/gallery/file_grid/file_grid_view.dart';
 import 'package:laborales/gallery/file_tree/file_tree_view.dart';
 import 'package:laborales/gallery/gallery_view.dart';
+import 'package:laborales/labeler/labeler_view.dart';
 import 'package:laborales/themes/split_view_theme.dart';
 import 'package:split_view/split_view.dart';
 
@@ -66,10 +67,11 @@ class RootView extends StatelessWidget {
               gripSize: splitViewGripSize,
               gripColor: splitViewGripColor,
               gripColorActive: splitViewGripColorActivate,
-              controller: SplitViewController(weights: [.3, .7]),
+              controller: SplitViewController(weights: [.3, .5, .2]),
               children: const [
                 GalleryView(),
                 DisplayView(),
+                LabelerView(),
               ],
             ),
           ),

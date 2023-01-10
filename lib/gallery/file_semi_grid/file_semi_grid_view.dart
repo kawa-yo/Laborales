@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/gallery/file_semi_grid/file_semi_grid_view_model.dart';
@@ -28,16 +26,6 @@ class FileSemiGridView extends ConsumerWidget {
         return ExpansionTile(
           title: Text(label),
           children: [
-            // for (int i = 0; i < (photos.length / numColumn).ceil(); i++)
-            //   Row(
-            //     children: [
-            //       for (int j = 0;
-            //           j < numColumn && i * numColumn + j < photos.length;
-            //           j++)
-            //         Expanded(child: PhotoView(photos[i * numColumn + j]))
-            //     ],
-            //   )
-
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 600),
               child: GridView.builder(
