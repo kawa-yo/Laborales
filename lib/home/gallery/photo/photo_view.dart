@@ -1,11 +1,7 @@
-import 'dart:io';
-
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/gallery/file_grid/file_grid_view_model.dart';
-import 'package:laborales/gallery/photo/photo_view_model.dart';
-import 'package:laborales/labeler/labeler_view_model.dart';
+import 'package:laborales/home/gallery/photo/photo_view_model.dart';
+import 'package:laborales/home/labeler/labeler_view_model.dart';
 
 class PhotoView extends ConsumerWidget {
   final Photo photo;
@@ -20,7 +16,7 @@ class PhotoView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    debugPrint("build: PhotoView(${photo.idx})");
+    // debugPrint("build: PhotoView(${photo.idx})");
     bool selected = ref
         .watch(photosProvider.select((value) => value.selectedPhoto == photo));
     String label =

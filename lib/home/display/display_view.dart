@@ -1,8 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/gallery/file_grid/file_grid_view_model.dart';
-import 'package:laborales/gallery/photo/photo_view_model.dart';
-import 'package:laborales/root/root_view_model.dart';
+import 'package:laborales/home/gallery/photo/photo_view_model.dart';
+import 'package:laborales/launcher/launcher_view_model.dart';
 
 class DisplayView extends ConsumerWidget {
   const DisplayView({super.key});
@@ -15,8 +16,8 @@ class DisplayView extends ConsumerWidget {
     Widget label = Container();
     if (photo != null) {
       var _dirname =
-          ref.watch(rootProvider).project!.targetDir.path.split("/").last;
-      var _start = photo.src.path.indexOf(_dirname);
+          ref.watch(launcherProvider).project!.targetDir.path.split("/").last;
+      var _start = max(0, photo.src.path.indexOf(_dirname));
       var caption = photo.src.path.substring(_start);
       image =
           Image.file(photo.src, width: double.infinity, fit: BoxFit.contain);

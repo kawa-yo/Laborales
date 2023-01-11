@@ -1,15 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
-import 'package:laborales/gallery/file_grid/file_grid_view_model.dart';
-import 'package:laborales/gallery/file_tree/file_tree_model.dart';
-import 'package:laborales/gallery/photo/photo_view_model.dart';
-import 'package:laborales/root/root_view_model.dart';
-
-typedef FSE = FileSystemEntity;
+import 'package:laborales/home/gallery/file_tree/file_tree_model.dart';
+import 'package:laborales/home/gallery/photo/photo_view_model.dart';
+import 'package:laborales/launcher/launcher_view_model.dart';
+import 'package:laborales/repository/secure_bookmarks.dart';
 
 extension NodeExt on Node {
   static Node fromFSE(
@@ -41,7 +38,7 @@ class FileTreeViewModel extends ChangeNotifier {
   FileTreeViewModel() : controller = TreeViewController();
 
   Future<bool> initialize(WidgetRef ref) async {
-    var project = ref.watch(rootProvider).project;
+    var project = ref.watch(launcherProvider).project;
     if (project == null) {
       return false;
     }

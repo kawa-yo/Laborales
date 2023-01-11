@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/themes/theme.dart';
 
-final labelerProvider = ChangeNotifierProvider((ref) => LabelerViewModel());
+final labelerProvider = ChangeNotifierProvider((ref) => LabelerViewModel(ref));
 
 class LabelerViewModel extends ChangeNotifier {
+  final Ref ref;
+
   List<String> _labels;
   List<Color> _colors;
 
   List<String> get labels => _labels;
   List<Color> get colors => _colors;
 
-  LabelerViewModel()
+  LabelerViewModel(this.ref)
       : _colors = [],
         _labels = [] {
     addLabel("label1");
@@ -50,5 +54,13 @@ class LabelerViewModel extends ChangeNotifier {
       return Colors.grey;
     }
     return _colors[idx];
+  }
+
+  void setSelectedPhotoLabel(String label) {
+    var photosViewModel = ref.read(photosProvider);
+    var selectedPhoto = photosViewModel.selectedPhoto;
+    if (selectedPhoto != null) {
+      photosViewModel.setLabel(selectedPhoto, label);
+    }
   }
 }
