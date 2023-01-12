@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/home/gallery/photo/photo_view_model.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/themes/theme.dart';
 
 final labelerProvider = ChangeNotifierProvider((ref) => LabelerViewModel(ref));
@@ -57,7 +56,7 @@ class LabelerViewModel extends ChangeNotifier {
   }
 
   void setSelectedPhotoLabel(String label) {
-    var photosViewModel = ref.read(photosProvider);
+    var photosViewModel = ref.read(galleryProvider);
     var selectedPhoto = photosViewModel.selectedPhoto;
     if (selectedPhoto != null) {
       photosViewModel.setLabel(selectedPhoto, label);

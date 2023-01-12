@@ -5,11 +5,13 @@ class FloatingView extends HookWidget {
   final Widget child;
   final Widget floatingWidget;
   final Offset initialPosition;
+  final void Function(Offset localPosition)? onPositionChanged;
 
   const FloatingView({
     super.key,
     required this.floatingWidget,
     required this.child,
+    this.onPositionChanged,
     this.initialPosition = const Offset(100, 100),
   });
 
@@ -17,10 +19,13 @@ class FloatingView extends HookWidget {
   Widget build(BuildContext context) {
     var pos = useState(initialPosition);
 
-    void setPosition(Offset position) {
+    void onDragEnd(Offset globalPos) {
       var box = context.findRenderObject() as RenderBox;
       var offset = box.localToGlobal(Offset.zero);
-      pos.value = position - offset;
+      var localPos = globalPos - offset;
+
+      onPositionChanged?.call(localPos);
+      pos.value = localPos;
     }
 
     return Stack(
@@ -31,7 +36,7 @@ class FloatingView extends HookWidget {
           top: pos.value.dy,
           child: Draggable(
             feedback: floatingWidget,
-            onDragEnd: (details) => setPosition(details.offset),
+            onDragEnd: (details) => onDragEnd(details.offset),
             childWhenDragging: const SizedBox.shrink(),
             child: floatingWidget,
           ),

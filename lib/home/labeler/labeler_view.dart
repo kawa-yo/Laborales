@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/home/gallery/photo/photo_view_model.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/home/labeler/labeler_view_model.dart';
-import 'package:laborales/themes/theme.dart';
 
 class LabelerView extends ConsumerWidget {
   const LabelerView({super.key});
@@ -10,9 +9,9 @@ class LabelerView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var viewModel = ref.watch(labelerProvider);
-    var photosViewModel = ref.watch(photosProvider);
-    var selectedPhoto = photosViewModel.selectedPhoto;
-    var selectedLabel = photosViewModel.labelOf(selectedPhoto);
+    var galleryViewModel = ref.watch(galleryProvider);
+    var selectedPhoto = galleryViewModel.selectedPhoto;
+    var selectedLabel = galleryViewModel.labelOf(selectedPhoto);
     var labels = viewModel.labels;
     var colors = viewModel.colors;
     return ListView.builder(

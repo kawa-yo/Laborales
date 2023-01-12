@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/home/labeler/labeler_view_model.dart';
 
@@ -18,15 +19,15 @@ class PhotoView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // debugPrint("build: PhotoView(${photo.idx})");
     bool selected = ref
-        .watch(photosProvider.select((value) => value.selectedPhoto == photo));
+        .watch(galleryProvider.select((value) => value.selectedPhoto == photo));
     String label =
-        ref.watch(photosProvider.select((value) => value.labelOf(photo)));
+        ref.watch(galleryProvider.select((value) => value.labelOf(photo)));
     Color color =
         ref.watch(labelerProvider.select((value) => value.colorOf(label))) ??
             Colors.transparent;
 
     return GestureDetector(
-      onTap: () => ref.read(photosProvider).select(photo.idx),
+      onTap: () => ref.read(galleryProvider).select(photo.idx),
       child: FittedBox(
         fit: BoxFit.fill,
         child: Container(

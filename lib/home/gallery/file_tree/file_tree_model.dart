@@ -1,63 +1,76 @@
-import 'dart:collection';
+import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:laborales/home/gallery/file_tree/file_tree_view_models.dart';
-import 'package:laborales/repository/secure_bookmarks.dart';
 
-const imageExtension = [".png", ".jpg", ".jpeg"];
+// Stream<TreeViewController> withAddNodesOnStream(
+//   TreeViewController controller,
+//   StreamController<List<Node>> streamController,
+// ) async* {
+//   var receivePort = ReceivePort();
+//   var isolate = await Isolate.spawn(_withAddNodesOnStream,
+//       [receivePort.sendPort, controller, streamController]);
+//   await for (var message in receivePort) {
+//     if (message == null) {
+//       break;
+//     }
+//     yield message as TreeViewController;
+//   }
+// }
+//
+// Future<void> _withAddNodesOnStream(List<dynamic> args) async {
+//   SendPort p = args[0];
+//   TreeViewController controller = args[1];
+//   StreamController<List<Node>> streamController = args[2];
+//
+//   await for (var nodes in streamController.stream) {
+//     for (var node in nodes) {
+//       int last = node.key.lastIndexOf("/");
+//       var parentKey = node.key.substring(0, last);
+//
+//       controller = _makeParents(controller, node);
+//       controller = controller.withAddNode(parentKey, node);
+//     }
+//     p.send(controller);
+//   }
+//   Isolate.exit(p);
+// }
 
-bool isImagePath(String path) {
-  var lower = path.toLowerCase();
-  return imageExtension.any((ext) => lower.endsWith(ext));
+/// use isolate to prevent from busy-wait
+Future<TreeViewController> withAddNodes(
+  TreeViewController controller,
+  List<Node> nodes,
+) async {
+  var receivePort = ReceivePort();
+  var isolate = await Isolate.spawn(
+      _withAddNodes, [receivePort.sendPort, controller, nodes]);
+  return await receivePort.first as TreeViewController;
 }
 
-Stream<FSE> bfsOnFileSystem(Directory dir) async* {
-  final Q = Queue<FSE>();
-  Q.addLast(dir);
-  while (Q.isNotEmpty) {
-    final fse = Q.removeFirst();
-    if (FSE.isLinkSync(fse.path)) {
-      debugPrint("symlink: ${fse} is skipped");
-      continue;
-    }
+void _withAddNodes(List<dynamic> args) {
+  SendPort p = args[0];
+  TreeViewController controller = args[1];
+  List<Node> nodes = args[2];
 
-    if (fse is File && isImagePath(fse.path)) {
-      yield fse;
-    }
+  for (var node in nodes) {
+    int last = node.key.lastIndexOf("/");
+    var parentKey = node.key.substring(0, last);
 
-    if (fse is Directory) {
-      for (final child in fse.listSync()
-        ..sort((a, b) => a.path.compareTo(b.path))) {
-        Q.addLast(child);
-      }
-    }
+    controller = _makeParents(controller, node);
+    controller = controller.withAddNode(parentKey, node);
   }
+  Isolate.exit(p, controller);
 }
 
-Future<List<FSE>> dfsOnFileSystem(FSE fse) async {
-  throw UnimplementedError();
-  if (fse is File && isImagePath(fse.path)) {
-    return [fse];
-  }
-  if (fse is Directory) {
-    var list = <FSE>[];
-    for (var child in fse.listSync()
-      ..sort((a, b) => a.path.compareTo(b.path))) {
-      list.addAll(await dfsOnFileSystem(child));
-    }
-  }
-  return [];
-}
+TreeViewController _makeParents(TreeViewController controller, Node node) {
+  var parent = Directory(node.key).parent;
+  var parentNode = NodeExt.fromFSE(parent);
 
-Future<Directory?> pickDirectory() async {
-  var path = await FilePicker.platform
-      .getDirectoryPath(dialogTitle: "Pick the Directory");
-  if (path != null) {
-    var dir = Directory(path);
-    dir = await ensureToOpen(dir);
-    return dir;
+  if (controller.getNode(parentNode.key) != null) {
+    return controller;
   }
-  return null;
+  controller = _makeParents(controller, parentNode);
+  return controller.withAddNode(parent.parent.path, parentNode);
 }

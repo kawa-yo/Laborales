@@ -4,13 +4,6 @@ import 'dart:isolate';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
-void dumpToJson(
-  File jsonFile,
-  List<String> paths,
-  List<String> photoLabels,
-  List<String> allLabels,
-) {}
-
 Future<bool> saveAsCSV(
   File csvFile,
   List<String> paths,

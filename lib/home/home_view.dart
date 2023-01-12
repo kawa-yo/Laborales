@@ -19,6 +19,8 @@ class HomeView extends ConsumerWidget {
       actions: ref.read(homeViewProvider).actions,
       autofocus: true,
       child: FloatingView(
+        initialPosition: ref.read(homeViewProvider).savedLabelerPosition,
+        onPositionChanged: ref.read(homeViewProvider).onLabelerPositionChanged,
         floatingWidget: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 300),
           child: Card(

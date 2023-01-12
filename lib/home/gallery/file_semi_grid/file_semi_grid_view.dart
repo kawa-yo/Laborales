@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/home/gallery/file_grid/file_grid_view_model.dart';
 import 'package:laborales/home/gallery/file_semi_grid/file_semi_grid_view_model.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/home/gallery/photo/photo_view.dart';
-import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/launcher/launcher_view_model.dart';
 
 class FileSemiGridView extends ConsumerWidget {
@@ -11,7 +13,7 @@ class FileSemiGridView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var allPhotos = ref.watch(photosProvider.select((value) => value.list));
+    var allPhotos = ref.watch(galleryProvider.select((value) => value.list));
     var listedPhotos = photoList(allPhotos);
     var keys = listedPhotos.keys.toList();
     var numColumn =
@@ -23,7 +25,8 @@ class FileSemiGridView extends ConsumerWidget {
         var photos = listedPhotos[key]!;
         var _dirname =
             ref.watch(launcherProvider).project!.targetDir.path.split("/").last;
-        var label = key.substring(key.indexOf(_dirname));
+        int _start = max(0, key.indexOf(_dirname));
+        var label = key.substring(_start);
         return ExpansionTile(
           title: Text(label),
           children: [

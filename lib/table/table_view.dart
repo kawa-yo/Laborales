@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/home/gallery/photo/photo_view_model.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/table/table_view_model.dart';
 import 'package:laborales/themes/theme.dart';
 
@@ -38,9 +38,9 @@ class TableView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var photosViewModel = ref.watch(photosProvider);
-    var photos = photosViewModel.list;
-    var labelOf = photosViewModel.labelOf;
+    var galleryViewModel = ref.watch(galleryProvider);
+    var photos = galleryViewModel.list;
+    var labelOf = galleryViewModel.labelOf;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[200],

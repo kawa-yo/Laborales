@@ -2,9 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/home/gallery/photo/photo_view_model.dart';
-import 'package:laborales/home/labeler/labeler_view_model.dart';
-import 'package:laborales/launcher/launcher_view_model.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/table/table_model.dart';
 
 final tableProvider = Provider((ref) => TableViewModel(ref));
@@ -21,9 +19,9 @@ class TableViewModel {
     if (savePath == null) {
       return null;
     }
-    var photosViewModel = ref.read(photosProvider);
-    var photos = photosViewModel.list;
-    var labelOf_ = photosViewModel.labelOf;
+    var galleryViewModel = ref.read(galleryProvider);
+    var photos = galleryViewModel.list;
+    var labelOf_ = galleryViewModel.labelOf;
     var paths = photos.map((e) => e.src.path).toList();
     var labels = photos.map((e) => labelOf_(e)).toList();
     var file = File(savePath);

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/home/gallery/file_grid/file_grid_view_model.dart';
-import 'package:laborales/home/gallery/photo/photo_view_model.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
+import 'package:laborales/home/home_model.dart';
 import 'package:laborales/home/labeler/labeler_view_model.dart';
+import 'package:laborales/launcher/launcher_view_model.dart';
 
 class SingleIncrementSelectionIntent extends Intent {
   final int increment;
@@ -58,11 +60,11 @@ class HomeViewModel extends ChangeNotifier {
         SingleIncrementSelectionIntent:
             CallbackAction<SingleIncrementSelectionIntent>(
                 onInvoke: (intent) => ref
-                    .read(photosProvider)
+                    .read(galleryProvider)
                     .incrementSelection(intent.increment)),
         MultiIncrementSelectionIntent: CallbackAction<
                 MultiIncrementSelectionIntent>(
-            onInvoke: (intent) => ref.read(photosProvider).incrementSelection(
+            onInvoke: (intent) => ref.read(galleryProvider).incrementSelection(
                 intent.increment * ref.read(fileGridProvider).numColumn)),
         DigitKeyIntent: CallbackAction<DigitKeyIntent>(onInvoke: (intent) {
           int idx = intent.digit - 1;
@@ -73,4 +75,17 @@ class HomeViewModel extends ChangeNotifier {
           }
         })
       };
+
+  Offset get savedLabelerPosition {
+    var project = ref.read(launcherProvider).project;
+    return loadFloatingPositionFromPrefs(project!);
+  }
+
+  void onLabelerPositionChanged(Offset localPos) {
+    var project = ref.read(launcherProvider).project;
+    if (project == null) {
+      return;
+    }
+    saveFloatingPositionToPrefs(localPos, project);
+  }
 }

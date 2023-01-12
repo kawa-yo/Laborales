@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:laborales/home/gallery/file_tree/file_tree_model.dart';
-import 'package:laborales/home/gallery/photo/photo_view_model.dart';
-import 'package:laborales/launcher/launcher_view_model.dart';
 import 'package:laborales/repository/secure_bookmarks.dart';
 
 extension NodeExt on Node {
@@ -29,32 +28,15 @@ final fileTreeProvider = ChangeNotifierProvider((ref) => FileTreeViewModel());
 class FileTreeViewModel extends ChangeNotifier {
   TreeViewController controller;
 
-  final bool autoLoading = true;
+  /// listening to event synchronously
+  final StreamController<List<Node>> streamController;
 
-  Node? get root =>
-      controller.children.isNotEmpty ? controller.children.first : null;
   Node? get selectedNode => controller.selectedNode;
 
-  FileTreeViewModel() : controller = TreeViewController();
-
-  Future<bool> initialize(WidgetRef ref) async {
-    var project = ref.watch(launcherProvider).project;
-    if (project == null) {
-      return false;
-    }
-    var rootNode = NodeExt.fromFSE(project.targetDir, expanded: true);
-    var prevRoot = root;
-    if (prevRoot != null && prevRoot.key == rootNode.key) {
-      return false;
-    }
-    await setRoot(rootNode);
-    var files = dfsOnTree;
-    if (files.isNotEmpty) {
-      ref.read(photosProvider)
-        ..update(files)
-        ..select(0);
-    }
-    return true;
+  FileTreeViewModel()
+      : controller = TreeViewController(),
+        streamController = StreamController() {
+    // streamController.stream.listen(addNodes);
   }
 
   void onExpansion(String key, bool expanded) {
@@ -65,63 +47,37 @@ class FileTreeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Iterable<Photo> get dfsOnTree sync* {
-    if (root == null) return;
-    var stack = <Node>[root!];
-    int cnt = 0;
-    while (stack.isNotEmpty) {
-      var node = stack.removeLast();
-      if (FSE.isFileSync(node.key)) {
-        yield Photo(File(node.key), idx: cnt++);
-      } else {
-        stack.addAll(node.children.reversed);
-      }
-    }
-  }
+  // Future<void> startStream() async {
+  //   await for (var treeViewController
+  //       in withAddNodesOnStream(controller, streamController)) {
+  //     controller = treeViewController;
+  //     notifyListeners();
+  //   }
+  // }
 
-  Future<void> _loadFiles(Directory rootDir) async {
-    final files = bfsOnFileSystem(rootDir);
-    final nodes = files.map((fse) => NodeExt.fromFSE(fse));
-    await _addNodes(nodes);
-  }
+  // Future<void> endStream() async {
+  //   await streamController.done;
+  // }
 
-  void _makeParents(Node node) {
-    var parent = Directory(node.key).parent;
-    var parentNode = NodeExt.fromFSE(parent);
+  // void addNodesOnStream(Iterable<FSE> files) {
+  //   var nodes = files.map((file) => NodeExt.fromFSE(file)).toList();
+  //   streamController.add(nodes);
+  // }
 
-    if (controller.getNode(parentNode.key) != null) {
-      return;
-    }
-    _makeParents(parentNode);
-    controller = controller.withAddNode(parent.parent.path, parentNode);
-  }
-
-  Future<void> _addNodes(Stream<Node> nodes, {int updateCount = 1000}) async {
-    int cnt = 0;
-    await for (var node in nodes) {
-      int last = node.key.lastIndexOf("/");
-      var parentKey = node.key.substring(0, last);
-      _makeParents(node);
-      controller = controller.withAddNode(parentKey, node);
-
-      if (++cnt % updateCount == 0) {
-        debugPrint("#node: $cnt");
-        notifyListeners();
-      }
-    }
+  Future<void> addNodes(Iterable<FSE> files) async {
+    debugPrint("addNode: start");
+    var nodes = files.map((file) => NodeExt.fromFSE(file)).toList();
+    controller = await withAddNodes(controller, nodes);
+    debugPrint("addNode: end");
     notifyListeners();
-    debugPrint("done");
   }
 
-  Future<void> setRoot(Node root) async {
+  void setRoot(Directory rootDir) {
+    var rootNode = NodeExt.fromFSE(rootDir, expanded: true);
     controller = TreeViewController(
-      children: [root],
+      children: [rootNode],
     );
     notifyListeners();
-    var dir = Directory(root.key);
-    if (autoLoading) {
-      await _loadFiles(dir);
-    }
-    debugPrint("set new root to $dir");
+    debugPrint("set new root to $rootDir");
   }
 }

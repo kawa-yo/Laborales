@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/home/gallery/file_tree/file_tree_view_models.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/launcher/launcher_view_model.dart';
 import 'package:laborales/launcher/project_builder/project_builder_view.dart';
 import 'package:laborales/root/root_view.dart';
@@ -79,7 +79,8 @@ class LauncherView extends ConsumerWidget {
   }
 }
 
-void onProjectSelected(BuildContext context, WidgetRef ref, Project project) {
+void onProjectSelected(
+    BuildContext context, WidgetRef ref, Project project) async {
   debugPrint("$project selected.");
   ref.read(launcherProvider).selectProject(project);
   Navigator.push(
@@ -88,5 +89,6 @@ void onProjectSelected(BuildContext context, WidgetRef ref, Project project) {
       builder: (context) => const RootView(),
     ),
   );
-  ref.read(fileTreeProvider).initialize(ref);
+  Future.delayed(const Duration(milliseconds: 100))
+      .then((_) => ref.read(galleryProvider).initialize());
 }
