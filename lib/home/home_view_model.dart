@@ -26,7 +26,14 @@ final homeViewProvider = ChangeNotifierProvider((ref) => HomeViewModel(ref));
 
 class HomeViewModel extends ChangeNotifier {
   final Ref ref;
-  HomeViewModel(this.ref);
+  Offset defaultLabelerPosition = const Offset(100, 500);
+
+  HomeViewModel(this.ref) {
+    var savedPos = savedLabelerPosition();
+    if (savedPos != null) {
+      defaultLabelerPosition = savedPos;
+    }
+  }
 
   final shortcuts = {
     const SingleActivator(LogicalKeyboardKey.arrowLeft):
@@ -76,9 +83,12 @@ class HomeViewModel extends ChangeNotifier {
         })
       };
 
-  Offset get savedLabelerPosition {
+  Offset? savedLabelerPosition() {
     var project = ref.read(launcherProvider).project;
-    return loadFloatingPositionFromPrefs(project!);
+    if (project == null) {
+      return null;
+    }
+    return loadFloatingPositionFromPrefs(project);
   }
 
   void onLabelerPositionChanged(Offset localPos) {

@@ -5,11 +5,14 @@ import 'package:laborales/repository/preferences.dart';
 
 const root = "laborales/projects";
 
-Offset loadFloatingPositionFromPrefs(Project project) {
+Offset? loadFloatingPositionFromPrefs(Project project) {
   String prefix = "$root/${project.name}/settings/labeler_position";
 
-  double dx = prefs.getDouble("$prefix/dx") ?? 0;
-  double dy = prefs.getDouble("$prefix/dy") ?? 0;
+  double? dx = prefs.getDouble("$prefix/dx");
+  double? dy = prefs.getDouble("$prefix/dy");
+  if (dx == null || dy == null) {
+    return null;
+  }
   return Offset(dx, dy);
 }
 

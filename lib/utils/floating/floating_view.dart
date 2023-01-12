@@ -12,7 +12,7 @@ class FloatingView extends HookWidget {
     required this.floatingWidget,
     required this.child,
     this.onPositionChanged,
-    this.initialPosition = const Offset(100, 100),
+    this.initialPosition = const Offset(0, 0),
   });
 
   @override

@@ -14,11 +14,14 @@ class GalleryViewModel extends ChangeNotifier {
   Map<Photo, String> _photo2label;
   List<Photo> _list;
   int? _selectedIdx;
+  int defaultTabIndex = 0;
   final Ref ref;
 
   GalleryViewModel(this.ref)
       : _list = [],
-        _photo2label = {};
+        _photo2label = {} {
+    defaultTabIndex = savedTabIndex() ?? defaultTabIndex;
+  }
 
   List<Photo> get list => _list;
   // Map<Photo, String> get photo2label => _photo2label;
@@ -111,5 +114,21 @@ class GalleryViewModel extends ChangeNotifier {
     _list = [..._list, ...addition];
     debugPrint("#photo: ${_list.length}");
     notifyListeners();
+  }
+
+  int? savedTabIndex() {
+    var project = ref.read(launcherProvider).project;
+    if (project == null) {
+      return null;
+    }
+    return loadTabIndexFromPrefs(project);
+  }
+
+  void onTabChanged(int idx) {
+    var project = ref.read(launcherProvider).project;
+    if (project == null) {
+      return;
+    }
+    saveTabIndexToPrefs(idx, project);
   }
 }
