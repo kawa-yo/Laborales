@@ -18,7 +18,7 @@ class GalleryView extends ConsumerWidget {
         initialIndex: ref.read(galleryProvider).defaultTabIndex,
         child: Builder(
           builder: (context) {
-            var controller = DefaultTabController.of(context)!;
+            var controller = DefaultTabController.of(context);
             controller.addListener(() {
               int idx = controller.index;
               ref.read(galleryProvider).onTabChanged(idx);

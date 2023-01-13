@@ -22,9 +22,9 @@ class PhotoView extends ConsumerWidget {
         .watch(galleryProvider.select((value) => value.selectedPhoto == photo));
     String label =
         ref.watch(galleryProvider.select((value) => value.labelOf(photo)));
-    Color color =
-        ref.watch(labelerProvider.select((value) => value.colorOf(label))) ??
-            Colors.grey[200]!;
+    Color color = ref.watch(
+            labelerProvider.select((value) => value.label2color[label])) ??
+        Colors.grey[200]!;
 
     return GestureDetector(
       onTap: () => ref.read(galleryProvider).select(photo.idx),
@@ -32,16 +32,19 @@ class PhotoView extends ConsumerWidget {
         fit: BoxFit.fill,
         child: Opacity(
           opacity: selected ? 1.0 : .6,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[50],
-              border: Border.all(
-                width: 2.5,
-                color: color,
+          child: Padding(
+            padding: EdgeInsets.all(selected ? 0.0 : 2.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                border: Border.all(
+                  width: 2.5,
+                  color: color,
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
               ),
-              borderRadius: const BorderRadius.all(Radius.circular(5)),
+              child: Image.file(photo.src, width: width, height: height),
             ),
-            child: Image.file(photo.src, width: width, height: height),
           ),
         ),
       ),

@@ -13,15 +13,19 @@ class LabelerView extends ConsumerWidget {
     var selectedPhoto = galleryViewModel.selectedPhoto;
     var selectedLabel = galleryViewModel.labelOf(selectedPhoto);
     var labels = viewModel.labels;
-    var colors = viewModel.colors;
+    var colorOf = viewModel.label2color;
     return ListView.builder(
       shrinkWrap: true,
       itemCount: labels.length,
       itemBuilder: ((context, idx) {
+        var label = labels[idx];
+        var color = colorOf[label] ?? Colors.grey;
         return CheckboxListTile(
-          title: Text(labels[idx]),
-          side: BorderSide(color: colors[idx], width: 3),
-          activeColor: colors[idx],
+          title:
+              Text(labels[idx], style: Theme.of(context).textTheme.titleLarge),
+          tileColor: selectedLabel == label ? color.withOpacity(.1) : null,
+          side: BorderSide(color: color, width: 3),
+          activeColor: color,
           controlAffinity: ListTileControlAffinity.leading,
           value: selectedLabel == labels[idx],
           onChanged: (value) {

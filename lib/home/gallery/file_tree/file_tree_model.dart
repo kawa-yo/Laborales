@@ -44,8 +44,10 @@ Future<TreeViewController> withAddNodes(
   List<Node> nodes,
 ) async {
   var receivePort = ReceivePort();
-  var isolate = await Isolate.spawn(
-      _withAddNodes, [receivePort.sendPort, controller, nodes]);
+  await Isolate.spawn(
+    _withAddNodes,
+    [receivePort.sendPort, controller, nodes],
+  );
   return await receivePort.first as TreeViewController;
 }
 

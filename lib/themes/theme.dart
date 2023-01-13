@@ -44,4 +44,10 @@ final backgroundColor = Colors.grey[50]!;
 final lightTheme = ThemeData(
   primarySwatch: primaryColor,
   textTheme: const TextTheme(),
+  inputDecorationTheme: InputDecorationTheme(
+    labelStyle: const TextStyle(color: Colors.black54, fontSize: 16),
+    contentPadding:
+        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+  ),
 );
