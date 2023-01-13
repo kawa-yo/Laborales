@@ -1,12 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
+import 'package:laborales/home/labeler/labeler_model.dart';
+import 'package:laborales/launcher/launcher_view_model.dart';
 import 'package:laborales/themes/theme.dart';
 
 final labelerProvider = ChangeNotifierProvider((ref) => LabelerViewModel(ref));
 
 class LabelerViewModel extends ChangeNotifier {
   final Ref ref;
+  Timer? _debounce;
+  Duration debounceDuration = const Duration(seconds: 1);
 
   List<String> _labels;
   List<Color> _colors;
@@ -50,16 +56,31 @@ class LabelerViewModel extends ChangeNotifier {
   Color? colorOf(String label) {
     int idx = _labels.indexOf(label);
     if (idx == -1) {
-      return Colors.grey;
+      return null;
     }
     return _colors[idx];
   }
 
+  void onLabelSelected(String label) {
+    setSelectedPhotoLabel(label);
+    debugPrint("set label");
+
+    _debounce?.cancel();
+    _debounce = Timer(debounceDuration, () => savePhotoLabelsToJson());
+    debugPrint("reserve to save");
+  }
+
+  Future<bool> savePhotoLabelsToJson() async {
+    var jsonFile = ref.read(launcherProvider).project!.saveFile;
+    var path2label = ref.read(galleryProvider).path2label;
+    return await dumpToJson(jsonFile, path2label, labels);
+  }
+
   void setSelectedPhotoLabel(String label) {
-    var photosViewModel = ref.read(galleryProvider);
-    var selectedPhoto = photosViewModel.selectedPhoto;
+    var galleryViewModel = ref.read(galleryProvider);
+    var selectedPhoto = galleryViewModel.selectedPhoto;
     if (selectedPhoto != null) {
-      photosViewModel.setLabel(selectedPhoto, label);
+      galleryViewModel.setLabel(selectedPhoto, label);
     }
   }
 }

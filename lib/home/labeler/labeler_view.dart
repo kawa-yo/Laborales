@@ -27,7 +27,8 @@ class LabelerView extends ConsumerWidget {
           onChanged: (value) {
             debugPrint("${labels[idx]}: $value");
             if (value == true && selectedPhoto != null) {
-              viewModel.setSelectedPhotoLabel(labels[idx]);
+              // viewModel.setSelectedPhotoLabel(labels[idx]);
+              viewModel.onLabelSelected(labels[idx]);
             }
           },
         );

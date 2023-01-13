@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:laborales/home/home_view.dart';
 import 'package:laborales/table/table_view.dart';
+import 'package:window_size/window_size.dart';
 
 class RootView extends HookConsumerWidget {
   static const destinations = [
@@ -53,6 +54,7 @@ class RootView extends HookConsumerWidget {
 
     void onDestinationSelected(int idx) {
       if (idx == 0) {
+        setWindowTitle("laborales");
         Navigator.of(context, rootNavigator: true).pop();
       } else {
         selectedIdx.value = idx;

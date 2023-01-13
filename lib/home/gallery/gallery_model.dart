@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -73,4 +74,32 @@ int? loadTabIndexFromPrefs(Project project) {
 Future<void> saveTabIndexToPrefs(int idx, Project project) async {
   String key = "$root/${project.name}/settings/gallery_idx";
   await prefs.setInt(key, idx);
+}
+
+Future<Map<String, String>?> loadLabelsFromJson(File jsonFile) async {
+  var receivePort = ReceivePort();
+  await Isolate.spawn(
+    _loadLabelsFromJson,
+    [receivePort.sendPort, jsonFile],
+  );
+  return await receivePort.first as Map<String, String>?;
+}
+
+void _loadLabelsFromJson(List<dynamic> args) {
+  SendPort p = args[0];
+  File jsonFile = args[1];
+  var jsonText = jsonFile.readAsStringSync();
+  if (jsonText.isEmpty) {
+    Isolate.exit(p, null);
+  }
+  debugPrint("$jsonFile: `$jsonText`");
+  var jsonObject = jsonDecode(jsonText);
+  var path2label = jsonObject["photos"] as Map?;
+  if (path2label == null) {
+    Isolate.exit(p, null);
+  }
+  var casted = {
+    for (String path in path2label.keys) path: path2label[path] as String
+  };
+  Isolate.exit(p, casted);
 }

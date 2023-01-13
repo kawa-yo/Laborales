@@ -11,7 +11,7 @@ final galleryProvider =
     ChangeNotifierProvider(((ref) => GalleryViewModel(ref)));
 
 class GalleryViewModel extends ChangeNotifier {
-  Map<Photo, String> _photo2label;
+  Map<String, String> _path2label;
   List<Photo> _list;
   int? _selectedIdx;
   int defaultTabIndex = 0;
@@ -19,12 +19,12 @@ class GalleryViewModel extends ChangeNotifier {
 
   GalleryViewModel(this.ref)
       : _list = [],
-        _photo2label = {} {
+        _path2label = {} {
     defaultTabIndex = savedTabIndex() ?? defaultTabIndex;
   }
 
   List<Photo> get list => _list;
-  // Map<Photo, String> get photo2label => _photo2label;
+  Map<String, String> get path2label => _path2label;
 
   Photo? get selectedPhoto {
     int? idx = _selectedIdx;
@@ -39,7 +39,10 @@ class GalleryViewModel extends ChangeNotifier {
   }
 
   String labelOf(Photo? photo) {
-    var label = _photo2label[photo];
+    if (photo == null) {
+      return "";
+    }
+    var label = _path2label[photo.src.path];
     return label ?? "";
   }
 
@@ -68,7 +71,7 @@ class GalleryViewModel extends ChangeNotifier {
   }
 
   void setLabel(Photo photo, String label) {
-    _photo2label[photo] = label;
+    _path2label[photo.src.path] = label;
     notifyListeners();
   }
 
@@ -78,25 +81,34 @@ class GalleryViewModel extends ChangeNotifier {
       return false;
     }
     var rootDir = project.targetDir;
+    var jsonFile = project.saveFile;
 
     clear();
     ref.read(fileTreeProvider).setRoot(rootDir);
-    await _loadFiles(rootDir);
+
+    await _loadLabels(jsonFile);
+    await _loadPhotos(rootDir);
 
     return true;
   }
 
-  Future<void> _loadFiles(Directory rootDir) async {
+  Future<void> _loadPhotos(Directory rootDir) async {
     await for (var files in bfsOnFileSystem(rootDir)) {
       bool firstAddition = _list.isEmpty;
 
       addPhotos(files);
       await ref.read(fileTreeProvider).addNodes(files);
-      // ref.read(fileTreeProvider).addNodesOnStream(files);
 
       if (firstAddition) {
         select(0);
       }
+    }
+  }
+
+  Future<void> _loadLabels(File jsonFile) async {
+    var savedLabels = await loadLabelsFromJson(jsonFile);
+    if (savedLabels != null) {
+      _path2label = savedLabels;
     }
   }
 

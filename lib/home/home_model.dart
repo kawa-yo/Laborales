@@ -22,10 +22,3 @@ Future<void> saveFloatingPositionToPrefs(Offset pos, Project project) async {
   await prefs.setDouble("$prefix/dx", pos.dx);
   await prefs.setDouble("$prefix/dy", pos.dy);
 }
-
-void dumpToJson(
-  File jsonFile,
-  List<String> paths,
-  List<String> photoLabels,
-  List<String> allLabels,
-) {}
