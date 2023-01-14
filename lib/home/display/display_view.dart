@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laborales/home/display/display_view_model.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/launcher/launcher_view_model.dart';
 
@@ -27,15 +28,22 @@ class DisplayView extends ConsumerWidget {
       );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(child: image),
-          label,
-          const SizedBox(height: 10),
-        ],
+    return Listener(
+      onPointerSignal: ref.read(displayProvider).onPointerSignal,
+      child: GestureDetector(
+        onVerticalDragUpdate: (details) =>
+            ref.read(displayProvider).onDisplayDragged(details.delta.dy),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: image),
+              label,
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
       ),
     );
   }

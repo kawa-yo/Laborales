@@ -5,7 +5,7 @@ import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 
-Future<bool> dumpToJson(
+Future<void> dumpToJson(
   File jsonFile,
   Map<String, String> path2label,
   List<String> labels,
@@ -16,10 +16,9 @@ Future<bool> dumpToJson(
     _dumpToJson,
     [receivePort.sendPort, jsonFile, path2label, labels, label2color],
   );
-  return await receivePort.first as bool;
 }
 
-bool _dumpToJson(List<dynamic> args) {
+void _dumpToJson(List<dynamic> args) {
   debugPrint("dumpToJson: start");
   SendPort p = args[0];
   File jsonFile = args[1];
@@ -37,11 +36,11 @@ bool _dumpToJson(List<dynamic> args) {
     "photos": path2label,
   };
   var jsonText = jsonEncode(jsonObject);
-  jsonFile.writeAsStringSync(jsonText);
+  jsonFile.writeAsString(jsonText);
   debugPrint("jsonObject: $jsonObject");
 
   debugPrint("dumpToJson: end");
-  Isolate.exit(p, true);
+  Isolate.exit(p);
 }
 
 Future<Map<String, Color>?> loadLabelsFromJson(File jsonFile) async {

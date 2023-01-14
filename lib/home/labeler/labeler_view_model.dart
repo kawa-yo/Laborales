@@ -62,10 +62,10 @@ class LabelerViewModel extends ChangeNotifier {
     debugPrint("reserve to save");
   }
 
-  Future<bool> savePhotoLabels() async {
+  Future<void> savePhotoLabels() async {
     var jsonFile = ref.read(launcherProvider).project!.saveFile;
     var path2label = ref.read(galleryProvider).path2label;
-    return await dumpToJson(jsonFile, path2label, labels, label2color);
+    await dumpToJson(jsonFile, path2label, labels, label2color);
   }
 
   Future<bool> loadLabels() async {
