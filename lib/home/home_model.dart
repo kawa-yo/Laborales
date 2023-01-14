@@ -1,13 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:laborales/launcher/launcher_view_model.dart';
 import 'package:laborales/repository/preferences.dart';
 
-const root = "laborales/projects";
+const prefix = "laborales/general/labeler_position";
 
-Offset? loadFloatingPositionFromPrefs(Project project) {
-  String prefix = "$root/${project.name}/settings/labeler_position";
-
+Offset? loadFloatingPositionFromPrefs() {
   double? dx = prefs.getDouble("$prefix/dx");
   double? dy = prefs.getDouble("$prefix/dy");
   if (dx == null || dy == null) {
@@ -16,9 +12,7 @@ Offset? loadFloatingPositionFromPrefs(Project project) {
   return Offset(dx, dy);
 }
 
-Future<void> saveFloatingPositionToPrefs(Offset pos, Project project) async {
-  String prefix = "$root/${project.name}/settings/labeler_position";
-
+Future<void> saveFloatingPositionToPrefs(Offset pos) async {
   await prefs.setDouble("$prefix/dx", pos.dx);
   await prefs.setDouble("$prefix/dy", pos.dy);
 }

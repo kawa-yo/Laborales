@@ -10,7 +10,7 @@ import 'package:laborales/repository/secure_bookmarks.dart';
 
 const imageExtension = [".png", ".jpg", ".jpeg"];
 
-const root = "laborales/projects";
+const key = "laborales/general/gallery_idx";
 
 bool isImagePath(String path) {
   var lower = path.toLowerCase();
@@ -67,12 +67,10 @@ Future<void> _bfsOnFileSystem(List<dynamic> args) async {
 }
 
 int? loadTabIndexFromPrefs(Project project) {
-  String key = "$root/${project.name}/settings/gallery_idx";
   return prefs.getInt(key);
 }
 
 Future<void> saveTabIndexToPrefs(int idx, Project project) async {
-  String key = "$root/${project.name}/settings/gallery_idx";
   await prefs.setInt(key, idx);
 }
 

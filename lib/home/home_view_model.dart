@@ -5,7 +5,6 @@ import 'package:laborales/home/gallery/file_grid/file_grid_view_model.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/home/home_model.dart';
 import 'package:laborales/home/labeler/labeler_view_model.dart';
-import 'package:laborales/launcher/launcher_view_model.dart';
 
 class SingleIncrementSelectionIntent extends Intent {
   final int increment;
@@ -29,7 +28,11 @@ class HomeViewModel extends ChangeNotifier {
   Offset defaultLabelerPosition = const Offset(100, 500);
 
   HomeViewModel(this.ref) {
-    var savedPos = savedLabelerPosition();
+    initialize();
+  }
+
+  void initialize() {
+    var savedPos = loadFloatingPositionFromPrefs();
     if (savedPos != null) {
       defaultLabelerPosition = savedPos;
     }
@@ -82,19 +85,8 @@ class HomeViewModel extends ChangeNotifier {
         })
       };
 
-  Offset? savedLabelerPosition() {
-    var project = ref.read(launcherProvider).project;
-    if (project == null) {
-      return null;
-    }
-    return loadFloatingPositionFromPrefs(project);
-  }
-
   void onLabelerPositionChanged(Offset localPos) {
-    var project = ref.read(launcherProvider).project;
-    if (project == null) {
-      return;
-    }
-    saveFloatingPositionToPrefs(localPos, project);
+    defaultLabelerPosition = localPos;
+    saveFloatingPositionToPrefs(localPos);
   }
 }
