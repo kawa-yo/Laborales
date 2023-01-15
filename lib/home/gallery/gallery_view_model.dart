@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laborales/home/gallery/file_semi_grid/file_semi_grid_view_model.dart';
 import 'package:laborales/home/gallery/file_tree/file_tree_view_models.dart';
 import 'package:laborales/home/gallery/gallery_model.dart';
 import 'package:laborales/home/gallery/photo/photo_view_model.dart';
@@ -14,13 +15,13 @@ class GalleryViewModel extends ChangeNotifier {
   Map<String, String> _path2label;
   List<Photo> _list;
   int? _selectedIdx;
-  int defaultTabIndex = 0;
+  int tabIndex = 0;
   final Ref ref;
 
   GalleryViewModel(this.ref)
       : _list = [],
         _path2label = {} {
-    defaultTabIndex = savedTabIndex() ?? defaultTabIndex;
+    tabIndex = savedTabIndex() ?? tabIndex;
   }
 
   List<Photo> get list => _list;
@@ -51,10 +52,19 @@ class GalleryViewModel extends ChangeNotifier {
       return;
     }
     int idx = _selectedIdx! + increment;
-    if (idx < 0 || idx >= _list.length) {
-      return;
+    if (0 <= idx && idx < _list.length) {
+      /// [FileSemiGridView]
+      if (tabIndex == 1) {
+        var prev = _list[_selectedIdx!];
+        var next = _list[idx];
+        ref.read(fileSemiGridProvider).selectPhoto(prev, next);
+      }
+
+      /// [FileSemiGridView]
+      if (tabIndex == 2) {
+        select(idx);
+      }
     }
-    select(idx);
   }
 
   void select(int idx) {
@@ -137,6 +147,7 @@ class GalleryViewModel extends ChangeNotifier {
   }
 
   void onTabChanged(int idx) {
+    tabIndex = idx;
     var project = ref.read(launcherProvider).project;
     if (project == null) {
       return;

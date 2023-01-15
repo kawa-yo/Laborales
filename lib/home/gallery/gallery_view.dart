@@ -18,7 +18,7 @@ class GalleryView extends ConsumerWidget {
       padding: const EdgeInsets.all(2),
       child: DefaultTabController(
         length: 3,
-        initialIndex: ref.read(galleryProvider).defaultTabIndex,
+        initialIndex: ref.read(galleryProvider).tabIndex,
         child: Builder(
           builder: (context) {
             var controller = DefaultTabController.of(context);

@@ -19,7 +19,6 @@ class FileGridViewState extends ConsumerState<FileGridView> {
   final scrollController = ScrollController();
 
   void scrollTo(Photo photo, {required BuildContext context}) {
-    debugPrint("scroll ${widget.key}");
     if (widget.photos.isEmpty) {
       return;
     }
@@ -34,14 +33,13 @@ class FileGridViewState extends ConsumerState<FileGridView> {
     if (box == null) {
       return;
     }
-    //Offset offset = box.localToGlobal(Offset.zero);
     double photoSize = (box.size.width - 4) / numColumn;
     int row = idx ~/ numColumn;
-    double pos = photoSize * row; // -offset.dy;
+    double pos = photoSize * row;
 
     double renderedTop = scrollController.position.pixels;
     double renderedBottom = renderedTop + box.size.height;
-    debugPrint("$pos [$renderedTop, $renderedBottom]");
+    // debugPrint("$pos [$renderedTop, $renderedBottom]");
     if (pos < renderedTop) {
       scrollController.jumpTo(pos);
     }
@@ -54,7 +52,6 @@ class FileGridViewState extends ConsumerState<FileGridView> {
   Widget build(BuildContext context) {
     final numColumn =
         ref.watch(fileGridProvider.select((value) => value.numColumn));
-    // final scrollController = ref.read(fileGridProvider).controller;
 
     /// auto scrolling when selected photo changed.
     ref.listen(

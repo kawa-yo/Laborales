@@ -25,7 +25,6 @@ class FileSemiGridView extends ConsumerWidget {
       viewModel.expandFor(photo);
     }
     var key = viewModel.dir2key[dir];
-    debugPrint("${key}");
     if (key == null) {
       return;
     }

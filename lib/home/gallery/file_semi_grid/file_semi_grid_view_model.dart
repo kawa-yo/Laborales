@@ -50,4 +50,21 @@ class FileSemiGridViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void selectPhoto(Photo prev, Photo next) {
+    var prevDir = prev.src.parent.path;
+    var nextDir = next.src.parent.path;
+    if (dir2expanded[prevDir]!) {
+      if (prevDir == nextDir) {
+        ref.read(galleryProvider).select(next.idx);
+      }
+    } else {
+      for (var dir in dirs) {
+        if (dir2expanded[dir]!) {
+          ref.read(galleryProvider).select(dir2photos[dir]!.first.idx);
+          break;
+        }
+      }
+    }
+  }
 }
