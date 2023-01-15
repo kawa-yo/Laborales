@@ -27,13 +27,13 @@ class FileGridViewState extends ConsumerState<FileGridView> {
       return;
     }
     int idx = photo.idx - widget.photos.first.idx;
-    int numColumn =
-        ref.read(fileGridProvider.select((value) => value.numColumn));
+    int numColumn = ref.read(fileGridProvider).numColumn;
+    double padding = ref.read(fileGridProvider).padding;
     var box = context.findRenderObject() as RenderBox?;
     if (box == null) {
       return;
     }
-    double photoSize = (box.size.width - 4) / numColumn;
+    double photoSize = (box.size.width - padding * 2) / numColumn;
     int row = idx ~/ numColumn;
     double pos = photoSize * row;
 
@@ -50,8 +50,11 @@ class FileGridViewState extends ConsumerState<FileGridView> {
 
   @override
   Widget build(BuildContext context) {
-    final numColumn =
-        ref.watch(fileGridProvider.select((value) => value.numColumn));
+    var viewModel = ref.watch(fileGridProvider);
+    double padding = viewModel.padding;
+    int numColumn = viewModel.numColumn;
+    double cacheExtent = viewModel.cacheExtent;
+    debugPrint("build");
 
     /// auto scrolling when selected photo changed.
     ref.listen(
@@ -68,8 +71,8 @@ class FileGridViewState extends ConsumerState<FileGridView> {
       shrinkWrap: true,
       gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: numColumn),
-      padding: const EdgeInsets.all(2),
-      cacheExtent: 1000,
+      padding: EdgeInsets.all(padding),
+      cacheExtent: cacheExtent,
       itemCount: widget.photos.length,
       itemBuilder: (context, idx) => AspectRatio(
         aspectRatio: 1.0,
