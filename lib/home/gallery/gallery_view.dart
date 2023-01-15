@@ -4,6 +4,7 @@ import 'package:laborales/home/gallery/file_grid/file_grid_view.dart';
 import 'package:laborales/home/gallery/file_semi_grid/file_semi_grid_view.dart';
 import 'package:laborales/home/gallery/file_tree/file_tree_view.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
+import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/themes/theme.dart';
 
 class GalleryView extends ConsumerWidget {
@@ -11,6 +12,8 @@ class GalleryView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    List<Photo> photos =
+        ref.watch(galleryProvider.select((value) => value.list));
     return Padding(
       padding: const EdgeInsets.all(2),
       child: DefaultTabController(
@@ -49,10 +52,10 @@ class GalleryView extends ConsumerWidget {
               ),
               body: TabBarView(
                 controller: controller,
-                children: const [
-                  FileTreeView(),
+                children: [
+                  const FileTreeView(),
                   FileSemiGridView(),
-                  FileGridView(),
+                  FileGridView(photos: photos),
                 ],
               ),
             );

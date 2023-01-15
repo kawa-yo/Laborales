@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/home/labeler/labeler_view_model.dart';
+import 'package:laborales/themes/theme.dart';
 
 class PhotoView extends ConsumerWidget {
   final Photo photo;
@@ -32,8 +33,14 @@ class PhotoView extends ConsumerWidget {
         fit: BoxFit.fill,
         child: Opacity(
           opacity: selected ? 1.0 : .6,
-          child: Padding(
-            padding: EdgeInsets.all(selected ? 0.0 : 2.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              border: Border.all(
+                width: selected ? 2.0 : 0.0,
+                color: primaryColor,
+              ),
+            ),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.grey[50],
