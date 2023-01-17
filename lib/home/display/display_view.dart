@@ -16,10 +16,10 @@ class DisplayView extends ConsumerWidget {
     Widget image = const Icon(Icons.image, size: 300);
     Widget label = Container();
     if (photo != null) {
-      var _dirname =
+      var dirname_ =
           ref.watch(launcherProvider).project!.targetDir.path.split("/").last;
-      var _start = max(0, photo.src.path.indexOf(_dirname));
-      var caption = photo.src.path.substring(_start);
+      var start_ = max(0, photo.src.path.indexOf(dirname_));
+      var caption = photo.src.path.substring(start_);
       image =
           Image.file(photo.src, width: double.infinity, fit: BoxFit.contain);
       label = Text(

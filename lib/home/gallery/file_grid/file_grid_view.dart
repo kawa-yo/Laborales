@@ -54,7 +54,6 @@ class FileGridViewState extends ConsumerState<FileGridView> {
     double padding = viewModel.padding;
     int numColumn = viewModel.numColumn;
     double cacheExtent = viewModel.cacheExtent;
-    debugPrint("build");
 
     /// auto scrolling when selected photo changed.
     ref.listen(

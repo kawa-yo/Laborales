@@ -43,7 +43,7 @@ Future<void> _bfsOnFileSystem(List<dynamic> args) async {
   while (Q.isNotEmpty) {
     final fse = Q.removeFirst();
     if (FSE.isLinkSync(fse.path)) {
-      debugPrint("symlink: ${fse} is skipped");
+      debugPrint("symlink: $fse is skipped");
       continue;
     }
 

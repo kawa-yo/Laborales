@@ -36,18 +36,12 @@ class FileSemiGridViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void expandFor(Photo photo) {
-    for (var dir in dirs) {
-      _dir2expanded[dir] = false;
-    }
-    _dir2expanded[photo.src.parent.path] = true;
-    notifyListeners();
-  }
-
+  /// [setExpanded] will not notify [_dir2expanded] changes
+  /// because [ExpansionTile.expanded] cannot be changed programatically
   void setExpanded(String dir, bool value) {
     if (_dir2expanded[dir] != value) {
       _dir2expanded[dir] = value;
-      notifyListeners();
+      // notifyListeners();
     }
   }
 

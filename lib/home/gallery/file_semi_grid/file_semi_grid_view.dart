@@ -21,9 +21,6 @@ class FileSemiGridView extends ConsumerWidget {
     var dir = photo.src.parent.path;
     var viewModel = ref.read(fileSemiGridProvider);
     // viewModel.setExpanded(dir, true);
-    if (viewModel.dir2expanded[dir] == false) {
-      viewModel.expandFor(photo);
-    }
     var key = viewModel.dir2key[dir];
     if (key == null) {
       return;
@@ -49,9 +46,6 @@ class FileSemiGridView extends ConsumerWidget {
       },
     );
 
-    var numColumn =
-        ref.watch(fileGridProvider.select((value) => value.numColumn));
-
     var viewModel = ref.watch(fileSemiGridProvider);
     var dirs = viewModel.dirs;
     var dir2photos = viewModel.dir2photos;
@@ -66,10 +60,10 @@ class FileSemiGridView extends ConsumerWidget {
         var photos = dir2photos[dir]!;
         var expanded = dir2expanded[dir]!;
         var key = dir2key[dir]!;
-        var _dirname =
+        var dirname_ =
             ref.watch(launcherProvider).project!.targetDir.path.split("/").last;
-        int _start = max(0, dir.indexOf(_dirname));
-        var label = dir.substring(_start);
+        int start_ = max(0, dir.indexOf(dirname_));
+        var label = dir.substring(start_);
 
         return ExpansionTile(
           initiallyExpanded: expanded,

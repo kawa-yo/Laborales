@@ -82,6 +82,7 @@ class HomeViewModel extends ChangeNotifier {
           if (idx < labels.length) {
             ref.read(labelerProvider).onLabelSelected(labels[idx]);
           }
+          return null;
         })
       };
 

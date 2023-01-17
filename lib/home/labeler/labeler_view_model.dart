@@ -28,20 +28,22 @@ class LabelerViewModel extends ChangeNotifier {
   Future<void> initialize() async {
     bool success = await loadLabels();
     if (!success) {
-      addLabel("label1");
-      addLabel("label2");
-      addLabel("label3");
-      addLabel("label4");
+      addLabel("label1", save: false);
+      addLabel("label2", save: false);
+      addLabel("label3", save: false);
+      addLabel("label4", save: false);
     }
   }
 
-  void addLabel(String label, [Color? color]) {
+  void addLabel(String label, {Color? color, bool save = true}) {
     color ??= tenColors.firstWhere(
       (color) => !_label2color.containsValue(color),
       orElse: () => Colors.grey,
     );
     _label2color[label] = color;
-    savePhotoLabels();
+    if (save) {
+      savePhotoLabels();
+    }
 
     notifyListeners();
   }

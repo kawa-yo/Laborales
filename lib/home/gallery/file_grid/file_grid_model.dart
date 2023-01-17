@@ -1,7 +1,7 @@
 import 'package:laborales/repository/preferences.dart';
 
 const numColumnKey = "laborales/general/num_column_of_grid";
-const cacheExtentKey = "laborales/general/num_column_of_grid";
+const cacheExtentKey = "laborales/general/cache_extent";
 
 Future<void> saveNumColumnOfGridToPrefs(int numColumn) async {
   await prefs.setInt(numColumnKey, numColumn);
