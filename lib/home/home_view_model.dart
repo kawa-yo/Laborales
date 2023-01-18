@@ -80,7 +80,7 @@ class HomeViewModel extends ChangeNotifier {
           int idx = intent.digit - 1;
           var labels = ref.read(labelerProvider).labels;
           if (idx < labels.length) {
-            ref.read(labelerProvider).onLabelSelected(labels[idx]);
+            ref.read(labelerProvider).setSelectedPhotoLabel(labels[idx]);
           }
           return null;
         })
