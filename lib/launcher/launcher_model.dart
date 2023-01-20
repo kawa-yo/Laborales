@@ -55,6 +55,9 @@ Future<void> removeProjectFromPrefs(String projectName) async {
   var removed = projectNames..remove(projectName);
   prefs.remove(_projectKey(projectName));
   prefs.setStringList(_projectNamesKey(), removed);
+
+  var dbFile = await projectDbFile(projectName);
+  dbFile.deleteSync();
 }
 
 Future<void> saveProjectToPrefs(Project project) async {

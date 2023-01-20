@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laborales/data/table/table_model.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
-import 'package:laborales/table/table_model.dart';
 
-final tableProvider = Provider((ref) => TableViewModel(ref));
+final tableProvider = ChangeNotifierProvider((ref) => TableViewModel(ref));
 
-class TableViewModel {
+class TableViewModel extends ChangeNotifier {
   final Ref ref;
-  const TableViewModel(this.ref);
+  TableViewModel(this.ref);
 
   Future<File?> saveToFile() async {
     var savePath = await FilePicker.platform.saveFile(

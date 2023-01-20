@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:laborales/data/data_view.dart';
 import 'package:laborales/home/home_view.dart';
 import 'package:laborales/settings/settings_view.dart';
-import 'package:laborales/table/table_view.dart';
 import 'package:window_size/window_size.dart';
 
 class RootView extends HookConsumerWidget {
@@ -43,7 +43,7 @@ class RootView extends HookConsumerWidget {
 
   static const widgets = [
     HomeView(),
-    TableView(),
+    DataView(),
     SettingsView(),
   ];
 
