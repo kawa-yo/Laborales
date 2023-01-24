@@ -66,6 +66,12 @@ class LauncherViewModel extends ChangeNotifier {
     return true;
   }
 
+  Future<void> removeProject(Project project) async {
+    await removeProjectFromPrefs(project.name);
+    _projectList = _projectList..remove(project);
+    notifyListeners();
+  }
+
   Future<void> newProject(String projectName, Directory targetDir) async {
     File dbFile = await projectDbFile(projectName);
     var project = Project(

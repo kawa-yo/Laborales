@@ -82,7 +82,7 @@ Future<bool> upsertPhotoIntoDB(File dbFile, PhotoDTO photoDTO) async {
     await openMyDatabase(dbFile);
   }
   int id = await database!.insert(
-    MyTable.photo.name,
+    DBTable.photo.name,
     photoDTO.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
@@ -94,7 +94,7 @@ Future<List<PhotoDTO>> selectPhotosFromDB(File dbFile) async {
     await openMyDatabase(dbFile);
   }
   List<Map<String, dynamic>> selected = await database!.query(
-    MyTable.photo.name,
+    DBTable.photo.name,
     columns: PhotoDTO.columns,
   );
   var dtos = selected.map((e) => PhotoDTO.fromMap(e)).toList();

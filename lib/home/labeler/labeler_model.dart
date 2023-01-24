@@ -8,7 +8,7 @@ Future<bool> insertLabelIntoDB(File dbFile, LabelDTO labelDTO) async {
   if (database?.path != dbFile.path) {
     await openMyDatabase(dbFile);
   }
-  int id = await database!.insert(MyTable.label.name, labelDTO.toMap());
+  int id = await database!.insert(DBTable.label.name, labelDTO.toMap());
   return id != 0;
 }
 
@@ -17,7 +17,7 @@ Future<bool> deleteLabelFromDB(File dbFile, LabelDTO labelDTO) async {
     await openMyDatabase(dbFile);
   }
   int deleteCount = await database!.delete(
-    MyTable.label.name,
+    DBTable.label.name,
     where: "${LabelDTO.columnName} = ?",
     whereArgs: [labelDTO.name],
   );
@@ -29,7 +29,7 @@ Future<List<LabelDTO>> selectLabelsFromDB(File dbFile) async {
     await openMyDatabase(dbFile);
   }
   List<Map<String, dynamic>> selected = await database!.query(
-    MyTable.label.name,
+    DBTable.label.name,
     columns: LabelDTO.columns,
   );
   var labels = selected.map((e) => LabelDTO.fromMap(e)).toList();

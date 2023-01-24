@@ -16,6 +16,7 @@ Future<void> addProjectDialog(BuildContext context, WidgetRef ref) async {
               shrinkWrap: true,
               children: [
                 TextFormField(
+                  autofocus: true,
                   controller: viewModel.nameController,
                   validator: viewModel.nameValidator,
                   autovalidateMode: AutovalidateMode.always,

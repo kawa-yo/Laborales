@@ -44,7 +44,6 @@ class ProjectBuilderViewModel {
     if (dir == null) {
       return;
     }
-    await ensureToOpen(dir);
     dirController.text = dir.path;
   }
 

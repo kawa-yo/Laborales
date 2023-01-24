@@ -22,7 +22,6 @@ class LabelView extends HookConsumerWidget {
           leading: Icon(Icons.circle, color: color),
           title: Text(label, style: Theme.of(context).textTheme.titleLarge),
           trailing: IconButton(
-            tooltip: "remove",
             color: onHover.value ? Colors.red : Colors.grey[300],
             icon: const Icon(Icons.delete),
             onPressed: () => removeLabelDialog(context, ref, label),
