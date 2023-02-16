@@ -1,41 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/launcher/project_builder/project_builder_view_model.dart';
+import 'package:laborales/settings/label_settings/add_label_dialog/add_label_dialog_view_model.dart';
 
-Future<void> addProjectDialog(BuildContext context, WidgetRef ref) async {
-  var viewModel = ref.watch(projectBuilderProvider);
-
+Future<void> addLabelDialog(BuildContext context, WidgetRef ref) async {
+  var viewModel = ref.watch(addLabelDialogProvider);
   return await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("新規プロジェクト"),
+          title: const Text("新しいラベル"),
           content: SizedBox(
             width: 300,
             child: ListView(
               shrinkWrap: true,
               children: [
                 TextFormField(
-                  controller: viewModel.nameController,
-                  validator: viewModel.nameValidator,
+                  controller: viewModel.controller,
+                  validator: viewModel.validator,
                   autovalidateMode: AutovalidateMode.always,
                   decoration: const InputDecoration(
-                    label: Text("project name"),
+                    label: Text("label"),
                   ),
-                  onFieldSubmitted: (_) => viewModel.onSubmitted(context),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: viewModel.dirController,
-                  readOnly: true,
-                  validator: viewModel.nameValidator,
-                  autovalidateMode: AutovalidateMode.always,
-                  decoration: InputDecoration(
-                      label: const Text("images folder"),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: viewModel.onSearchIconPressed,
-                      )),
                   onFieldSubmitted: (_) => viewModel.onSubmitted(context),
                 ),
               ],

@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:laborales/gallery/file_tree/file_tree_view_models.dart';
 import 'package:macos_secure_bookmarks/macos_secure_bookmarks.dart';
 
 final _secureBookmarks = SecureBookmarks();
+
+typedef FSE = FileSystemEntity;
 
 Future<T> ensureToOpen<T extends FSE>(T fse) async {
   var bookmark = await _secureBookmarks.bookmark(fse);

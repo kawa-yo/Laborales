@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:laborales/gallery/file_grid/file_grid_view.dart';
-import 'package:laborales/gallery/file_semi_grid/file_semi_grid_view.dart';
-import 'package:laborales/gallery/file_tree/file_tree_view.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laborales/home/gallery/file_grid/file_grid_view.dart';
+import 'package:laborales/home/gallery/file_semi_grid/file_semi_grid_view.dart';
+import 'package:laborales/home/gallery/file_tree/file_tree_view.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
+import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/themes/theme.dart';
 
-class GalleryView extends StatelessWidget {
+class GalleryView extends ConsumerWidget {
   const GalleryView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    List<Photo> photos =
+        ref.watch(galleryProvider.select((value) => value.list));
     return Padding(
       padding: const EdgeInsets.all(2),
       child: DefaultTabController(
         length: 3,
+        initialIndex: ref.read(galleryProvider).tabIndex,
         child: Builder(
           builder: (context) {
             var controller = DefaultTabController.of(context)!;
+            controller.addListener(() {
+              int idx = controller.index;
+              ref.read(galleryProvider).onTabChanged(idx);
+            });
             return Scaffold(
               appBar: AppBar(
                 automaticallyImplyLeading: false,
@@ -23,7 +33,7 @@ class GalleryView extends StatelessWidget {
                 title: TabBar(
                   controller: controller,
                   labelColor: primaryColor,
-                  unselectedLabelColor: secondaryColor,
+                  unselectedLabelColor: primaryColor.shade200,
                   tabs: const [
                     Tab(
                       icon: Icon(Icons.account_tree),
@@ -42,10 +52,10 @@ class GalleryView extends StatelessWidget {
               ),
               body: TabBarView(
                 controller: controller,
-                children: const [
-                  FileTreeView(),
+                children: [
+                  const FileTreeView(),
                   FileSemiGridView(),
-                  FileGridView(),
+                  FileGridView(photos: photos),
                 ],
               ),
             );

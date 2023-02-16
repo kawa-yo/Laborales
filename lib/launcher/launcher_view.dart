@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laborales/gallery/file_tree/file_tree_view_models.dart';
+import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/launcher/launcher_view_model.dart';
 import 'package:laborales/launcher/project_builder/project_builder_view.dart';
 import 'package:laborales/root/root_view.dart';
-import 'package:laborales/root/root_view_model.dart';
+import 'package:window_size/window_size.dart';
 
 class LauncherView extends ConsumerWidget {
   const LauncherView({super.key});
@@ -29,7 +29,7 @@ class LauncherView extends ConsumerWidget {
                       Row(
                         children: [
                           Text("Projects",
-                              style: Theme.of(context).textTheme.headline1),
+                              style: Theme.of(context).textTheme.displayMedium),
                           const Spacer(),
                           Container(
                             decoration: BoxDecoration(
@@ -55,13 +55,15 @@ class LauncherView extends ConsumerWidget {
                           return ListTile(
                             title: Row(children: [
                               Text(project.name,
-                                  style: Theme.of(context).textTheme.headline2),
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall),
                               const Spacer(),
                               Text(project.lastModified,
-                                  style: Theme.of(context).textTheme.caption),
+                                  style:
+                                      Theme.of(context).textTheme.labelLarge),
                             ]),
                             subtitle: Text(project.targetDir.path,
-                                style: Theme.of(context).textTheme.caption),
+                                style: Theme.of(context).textTheme.labelLarge),
                             trailing: IconButton(
                               icon: const Icon(Icons.arrow_forward_ios),
                               tooltip: "open",
@@ -80,15 +82,17 @@ class LauncherView extends ConsumerWidget {
   }
 }
 
-void onProjectSelected(BuildContext context, WidgetRef ref, Project project) {
+void onProjectSelected(
+    BuildContext context, WidgetRef ref, Project project) async {
   debugPrint("$project selected.");
-  var rootViewModel = ref.watch(rootProvider);
-  rootViewModel.updateProject(project);
+  ref.read(launcherProvider).selectProject(project);
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => RootView(),
+      builder: (context) => const RootView(),
     ),
   );
-  ref.read(fileTreeProvider).initialize(ref);
+  setWindowTitle("laborales   [ ${project.name} ]");
+  Future.delayed(const Duration(milliseconds: 100))
+      .then((_) => ref.read(galleryProvider).initialize());
 }

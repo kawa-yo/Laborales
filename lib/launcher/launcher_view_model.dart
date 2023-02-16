@@ -43,8 +43,10 @@ final launcherProvider = ChangeNotifierProvider(((ref) => LauncherViewModel()));
 
 class LauncherViewModel extends ChangeNotifier {
   List<Project> _projectList;
+  Project? _selectedProject;
 
   List<Project> get projects => _projectList;
+  Project? get project => _selectedProject;
 
   LauncherViewModel() : _projectList = [];
 
@@ -68,6 +70,11 @@ class LauncherViewModel extends ChangeNotifier {
     );
     await saveProjectToPrefs(project);
     _projectList.add(project);
+    notifyListeners();
+  }
+
+  void selectProject(Project? project) {
+    _selectedProject = project;
     notifyListeners();
   }
 }

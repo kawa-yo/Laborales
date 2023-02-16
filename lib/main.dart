@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:laborales/launcher/launcher_view.dart';
 import 'package:laborales/repository/preferences.dart';
-import 'package:laborales/root/root_view.dart';
 import 'package:laborales/themes/theme.dart';
 
 void main() {
