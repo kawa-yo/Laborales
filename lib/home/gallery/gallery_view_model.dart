@@ -8,6 +8,7 @@ import 'package:laborales/home/gallery/gallery_model.dart';
 import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/launcher/launcher_view_model.dart';
 import 'package:laborales/repository/dto/photo_dto.dart';
+import 'package:path/path.dart';
 
 final galleryProvider =
     ChangeNotifierProvider(((ref) => GalleryViewModel(ref)));
@@ -118,17 +119,26 @@ class GalleryViewModel extends ChangeNotifier {
 
   Future<bool> _loadPhotoLabels() async {
     var dbFile = ref.read(launcherProvider).project!.dbFile;
+    var root = ref.read(launcherProvider).project!.targetDir;
     List<PhotoDTO> dtos = await selectPhotosFromDB(dbFile);
     if (dtos.isEmpty) {
       return false;
     }
-    _path2label = {for (var dto in dtos) dto.path: dto.label};
+    _path2label = {
+      for (var dto in dtos) join(root.path, dto.relativePath): dto.label
+    };
     return true;
   }
 
   Future<bool> _savePhotoLabel(Photo photo, String label) async {
     var dbFile = ref.read(launcherProvider).project!.dbFile;
-    var dto = PhotoDTO(path: photo.src.path, label: label);
+    var root = ref.read(launcherProvider).project!.targetDir;
+    var relativePath = photo.src.path.substring(root.path.length);
+    if (relativePath.startsWith("/")) {
+      relativePath = relativePath.substring(1);
+    }
+    var dto = PhotoDTO(relativePath: relativePath, label: label);
+    debugPrint("save: $relativePath");
     bool succeeded = await upsertPhotoIntoDB(dbFile, dto);
     return succeeded;
   }

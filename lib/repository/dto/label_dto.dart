@@ -6,13 +6,13 @@ class LabelDTO {
   static const columnColorG = "color_g";
   static const columnColorB = "color_b";
   static const columnColorA = "color_a";
-  static List<String> get columns => [
-        columnName,
-        columnColorR,
-        columnColorG,
-        columnColorB,
-        columnColorA,
-      ];
+  static const List<String> columns = [
+    columnName,
+    columnColorR,
+    columnColorG,
+    columnColorB,
+    columnColorA,
+  ];
 
   final String name;
   final Color color;

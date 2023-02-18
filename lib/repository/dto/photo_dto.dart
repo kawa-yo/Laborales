@@ -1,23 +1,23 @@
 class PhotoDTO {
-  static const columnPath = "path";
+  static const columnRelativePath = "relative_path";
   static const columnLabel = "label";
-  static List<String> get columns => [columnPath, columnLabel];
+  static const List<String> columns = [columnRelativePath, columnLabel];
 
-  final String path;
+  final String relativePath;
   final String label;
 
-  const PhotoDTO({required this.path, required this.label});
+  const PhotoDTO({required this.relativePath, required this.label});
 
   factory PhotoDTO.fromMap(Map<String, dynamic> map) {
     return PhotoDTO(
-      path: map["path"],
+      relativePath: map["relative_path"],
       label: map["label"],
     );
   }
 
   Map<String, String> toMap() {
     return {
-      "path": path,
+      "relative_path": relativePath,
       "label": label,
     };
   }
