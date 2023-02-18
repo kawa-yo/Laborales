@@ -46,6 +46,9 @@ class FileSemiGridView extends ConsumerWidget {
       },
     );
 
+    var selectedDir = ref.watch(galleryProvider
+        .select((value) => value.selectedPhoto?.src.parent.path));
+
     var viewModel = ref.watch(fileSemiGridProvider);
     var dirs = viewModel.dirs;
     var dir2photos = viewModel.dir2photos;
@@ -61,7 +64,7 @@ class FileSemiGridView extends ConsumerWidget {
         var expanded = dir2expanded[dir]!;
         var key = dir2key[dir]!;
         var dirname_ =
-            ref.watch(launcherProvider).project!.targetDir.path.split("/").last;
+            ref.read(launcherProvider).project!.targetDir.path.split("/").last;
         int start_ = max(0, dir.indexOf(dirname_));
         var label = dir.substring(start_);
 
@@ -69,7 +72,11 @@ class FileSemiGridView extends ConsumerWidget {
           initiallyExpanded: expanded,
           onExpansionChanged: (value) =>
               ref.read(fileSemiGridProvider).setExpanded(dir, value),
-          title: Text(label),
+          title: Text(
+            label,
+            style: TextStyle(
+                fontWeight: dir == selectedDir ? FontWeight.bold : null),
+          ),
           children: [
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 600),

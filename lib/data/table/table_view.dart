@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laborales/data/table/table_view_model.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
-import 'package:laborales/table/table_view_model.dart';
 import 'package:laborales/themes/theme.dart';
 
 class TableView extends ConsumerWidget {

@@ -7,6 +7,8 @@ import 'package:laborales/home/gallery/file_tree/file_tree_view_models.dart';
 import 'package:laborales/home/gallery/gallery_model.dart';
 import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/launcher/launcher_view_model.dart';
+import 'package:laborales/repository/dto/photo_dto.dart';
+import 'package:path/path.dart';
 
 final galleryProvider =
     ChangeNotifierProvider(((ref) => GalleryViewModel(ref)));
@@ -22,6 +24,22 @@ class GalleryViewModel extends ChangeNotifier {
       : _list = [],
         _path2label = {} {
     tabIndex = savedTabIndex() ?? tabIndex;
+  }
+
+  Future<bool> initialize() async {
+    var project = ref.read(launcherProvider).project;
+    if (project == null) {
+      return false;
+    }
+    var rootDir = project.targetDir;
+
+    clear();
+    ref.read(fileTreeProvider).setRoot(rootDir);
+
+    await _loadPhotoLabels();
+    await _loadPhotos(rootDir);
+
+    return true;
   }
 
   List<Photo> get list => _list;
@@ -82,24 +100,8 @@ class GalleryViewModel extends ChangeNotifier {
 
   void setLabel(Photo photo, String label) {
     _path2label[photo.src.path] = label;
+    _savePhotoLabel(photo, label);
     notifyListeners();
-  }
-
-  Future<bool> initialize() async {
-    var project = ref.watch(launcherProvider).project;
-    if (project == null) {
-      return false;
-    }
-    var rootDir = project.targetDir;
-    var jsonFile = project.saveFile;
-
-    clear();
-    ref.read(fileTreeProvider).setRoot(rootDir);
-
-    await _loadLabels(jsonFile);
-    await _loadPhotos(rootDir);
-
-    return true;
   }
 
   Future<void> _loadPhotos(Directory rootDir) async {
@@ -115,11 +117,30 @@ class GalleryViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadLabels(File jsonFile) async {
-    var savedLabels = await loadLabelsFromJson(jsonFile);
-    if (savedLabels != null) {
-      _path2label = savedLabels;
+  Future<bool> _loadPhotoLabels() async {
+    var dbFile = ref.read(launcherProvider).project!.dbFile;
+    var root = ref.read(launcherProvider).project!.targetDir;
+    List<PhotoDTO> dtos = await selectPhotosFromDB(dbFile);
+    if (dtos.isEmpty) {
+      return false;
     }
+    _path2label = {
+      for (var dto in dtos) join(root.path, dto.relativePath): dto.label
+    };
+    return true;
+  }
+
+  Future<bool> _savePhotoLabel(Photo photo, String label) async {
+    var dbFile = ref.read(launcherProvider).project!.dbFile;
+    var root = ref.read(launcherProvider).project!.targetDir;
+    var relativePath = photo.src.path.substring(root.path.length);
+    if (relativePath.startsWith("/")) {
+      relativePath = relativePath.substring(1);
+    }
+    var dto = PhotoDTO(relativePath: relativePath, label: label);
+    debugPrint("save: $relativePath");
+    bool succeeded = await upsertPhotoIntoDB(dbFile, dto);
+    return succeeded;
   }
 
   void clear() {

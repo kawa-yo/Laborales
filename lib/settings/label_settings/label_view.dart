@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:laborales/home/labeler/labeler_view_model.dart';
 import 'package:laborales/settings/label_settings/remove_label_dialog/remove_label_dialog_view.dart';
 
 class LabelView extends HookConsumerWidget {
@@ -22,7 +21,6 @@ class LabelView extends HookConsumerWidget {
           leading: Icon(Icons.circle, color: color),
           title: Text(label, style: Theme.of(context).textTheme.titleLarge),
           trailing: IconButton(
-            tooltip: "remove",
             color: onHover.value ? Colors.red : Colors.grey[300],
             icon: const Icon(Icons.delete),
             onPressed: () => removeLabelDialog(context, ref, label),

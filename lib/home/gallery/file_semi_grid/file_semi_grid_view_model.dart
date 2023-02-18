@@ -52,13 +52,6 @@ class FileSemiGridViewModel extends ChangeNotifier {
       if (prevDir == nextDir) {
         ref.read(galleryProvider).select(next.idx);
       }
-    } else {
-      for (var dir in dirs) {
-        if (dir2expanded[dir]!) {
-          ref.read(galleryProvider).select(dir2photos[dir]!.first.idx);
-          break;
-        }
-      }
     }
   }
 }
