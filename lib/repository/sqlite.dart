@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:laborales/repository/dto/label_dto.dart';
 import 'package:laborales/repository/dto/photo_dto.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 Database? _database;
 Database? get database => _database;
@@ -19,21 +20,45 @@ enum DBTable {
 
 Future<void> openMyDatabase(File file) async {
   _database?.close();
-  _database = await openDatabase(file.path);
+  // _database = await openDatabase(file.path);
+  _database = await databaseFactoryFfi.openDatabase(file.path);
   await _initializeDB(_database!);
 }
 
+Future<List<String>> _existingTables(Database db) async {
+  try {
+    var tables = await db.rawQuery("""
+      SELECT 
+          name
+      FROM 
+          sqlite_schema
+      WHERE 
+          type ='table' AND 
+          name NOT LIKE 'sqlite_%';
+    """);
+    return tables.map((e) => e["name"] as String).toList();
+  } on DatabaseException {
+    try {
+    var tables = await db.rawQuery("""
+      SELECT 
+          name
+      FROM 
+          sqlite_master
+      WHERE 
+          type ='table' AND 
+          name NOT LIKE 'sqlite_%';
+    """);
+    return tables.map((e) => e["name"] as String).toList();
+
+    } catch(e) {
+      rethrow;
+    }
+  } catch(e) {
+    rethrow;
+  }
+}
 Future<bool> _doesTableExists(Database db, DBTable table) async {
-  var tables = await db.rawQuery("""
-    SELECT 
-        name
-    FROM 
-        sqlite_schema
-    WHERE 
-        type ='table' AND 
-        name NOT LIKE 'sqlite_%';
-  """);
-  List<String> tableNames = tables.map((e) => e["name"] as String).toList();
+  var tableNames = await _existingTables(db);
   return tableNames.contains(table.name);
 }
 
