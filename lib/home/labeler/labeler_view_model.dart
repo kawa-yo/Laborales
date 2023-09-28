@@ -40,8 +40,10 @@ class LabelerViewModel extends ChangeNotifier {
   }
 
   void addLabel(String label, {Color? color}) {
+    print(_label2color);
     color ??= tenColors.firstWhere(
-      (color) => !_label2color.containsValue(color),
+      (c) => !_label2color.values
+          .any((existingColor) => c.value == existingColor.value),
       orElse: () => Colors.grey,
     );
     _label2color[label] = color;
@@ -51,7 +53,6 @@ class LabelerViewModel extends ChangeNotifier {
   }
 
   void removeLabel(String label) {
-    _label2color.remove(label);
     _deleteLabel(label);
 
     notifyListeners();
@@ -76,6 +77,7 @@ class LabelerViewModel extends ChangeNotifier {
     var dbFile = ref.read(launcherProvider).project!.dbFile;
     var dto = LabelDTO(name: label, color: _label2color[label]!);
     bool succeeded = await deleteLabelFromDB(dbFile, dto);
+    _label2color.remove(label);
     return succeeded;
   }
 

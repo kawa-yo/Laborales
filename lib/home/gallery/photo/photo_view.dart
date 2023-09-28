@@ -32,13 +32,13 @@ class PhotoView extends ConsumerWidget {
       child: FittedBox(
         fit: BoxFit.fill,
         child: Opacity(
-          opacity: selected ? 1.0 : .6,
+          opacity: selected ? 1.0 : .5,
           child: Container(
             decoration: BoxDecoration(
               color: Colors.grey[50],
               border: Border.all(
-                width: selected ? 2.0 : 0.0,
-                color: primaryColor,
+                width: selected ? 0.0 : 2.0,
+                color: Colors.grey[50]!,
               ),
             ),
             child: Container(
