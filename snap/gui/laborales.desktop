@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Laborales
+Comment=Laborales
+Exec=laborales
+Icon=${SNAP}/meta/gui/laborales.png # replace name to your app name
+Terminal=false
+Type=Application
+Categories=Education; #adjust accordingly your snap category
+
