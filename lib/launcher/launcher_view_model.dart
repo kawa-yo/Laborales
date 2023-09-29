@@ -58,7 +58,7 @@ class LauncherViewModel extends ChangeNotifier {
 
   Future<bool> initialize() async {
     debugPrint("initialize laucherviewmodel");
-    _projectList = await loadProjectsFromPrefs();
+    _projectList = await launcherModel.loadProjectsFromPrefs();
     _projectList.sort((p1, p2) =>
         p2.dbFile.lastModifiedSync().compareTo(p1.dbFile.lastModifiedSync()));
     debugPrint("projects: $_projectList");
@@ -67,19 +67,19 @@ class LauncherViewModel extends ChangeNotifier {
   }
 
   Future<void> removeProject(Project project) async {
-    await removeProjectFromPrefs(project.name);
+    await launcherModel.removeProjectFromPrefs(project.name);
     _projectList = _projectList..remove(project);
     notifyListeners();
   }
 
   Future<void> newProject(String projectName, Directory targetDir) async {
-    File dbFile = await projectDbFile(projectName);
+    File dbFile = await launcherModel.projectDbFile(projectName);
     var project = Project(
       name: projectName,
       targetDir: targetDir,
       dbFile: dbFile,
     );
-    await saveProjectToPrefs(project);
+    await launcherModel.saveProjectToPrefs(project);
     _projectList.add(project);
     notifyListeners();
   }
