@@ -18,11 +18,18 @@ apps:
     command: laborales
     extensions: [gnome] # gnome includes the libraries required by flutter
     plugs:
-    - network
+      - network
+      - home
     slots:
       - dbus-laborales
 parts:
+  zenity:
+    plugin: nil
+    stage-packages:
+      - zenity
   laborales:
+    after:
+      - zenity
     source: .
     plugin: flutter
     flutter-target: lib/main.dart # The main entry-point file of the application
