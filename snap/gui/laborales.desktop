@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Laborales
+Comment=Laborales
+Exec=laborales
+Icon=${SNAP}/meta/gui/laborales.png
+Terminal=false
+Type=Application
+Categories=Education

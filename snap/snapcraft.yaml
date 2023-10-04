@@ -1,0 +1,37 @@
+name: laborales
+version: 1.0.2
+summary: Laborales
+description: attach a label to each photos
+
+confinement: strict
+base: core22
+grade: stable
+
+slots:
+  dbus-laborales: # adjust accordingly to your app name
+    interface: dbus
+    bus: session
+    name: org.kawayo.laborales # adjust accordingly to your app name and
+    
+apps:
+  laborales:
+    command: laborales
+    extensions: [gnome] # gnome includes the libraries required by flutter
+    plugs:
+      - network
+      - home
+    slots:
+      - dbus-laborales
+parts:
+  zenity:
+    plugin: nil
+    stage-packages:
+      - zenity
+  laborales:
+    after:
+      - zenity
+    source: .
+    plugin: flutter
+    stage-packages: [curl]
+    flutter-target: lib/main.dart # The main entry-point file of the application
+
