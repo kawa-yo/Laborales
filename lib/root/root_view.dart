@@ -10,13 +10,6 @@ class RootView extends HookConsumerWidget {
   static const destinations = [
     NavigationRailDestination(
       icon: Tooltip(
-        message: "Back",
-        child: Icon(Icons.keyboard_arrow_left_sharp),
-      ),
-      label: Text("go back"),
-    ),
-    NavigationRailDestination(
-      icon: Tooltip(
         message: "home",
         child: Icon(Icons.home_outlined),
       ),
@@ -51,27 +44,42 @@ class RootView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var selectedIdx = useState(1);
+    var selectedIdx = useState(0);
 
     void onDestinationSelected(int idx) {
-      if (idx == 0) {
-        setWindowTitle("laborales");
-        Navigator.of(context, rootNavigator: true).pop();
-      } else {
-        selectedIdx.value = idx;
-      }
+      selectedIdx.value = idx;
     }
 
     return Scaffold(
       body: Row(
         children: [
           NavigationRail(
-            labelType: NavigationRailLabelType.selected,
-            destinations: destinations,
-            selectedIndex: selectedIdx.value,
-            onDestinationSelected: (idx) => onDestinationSelected(idx),
-          ),
-          Expanded(child: widgets[selectedIdx.value - 1]),
+              labelType: NavigationRailLabelType.selected,
+              destinations: destinations,
+              selectedIndex: selectedIdx.value,
+              onDestinationSelected: onDestinationSelected,
+              trailing: Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    padding: const EdgeInsets.only(bottom: 15.0),
+                    child: TextButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.blueGrey[50],
+                            minimumSize: const Size(60, 60),
+                            shape: const CircleBorder()),
+                        child: const Tooltip(
+                          message: "go back",
+                          child: Icon(Icons.keyboard_arrow_left_sharp),
+                        ),
+                        onPressed: () {
+                          setWindowTitle("laborales");
+                          Navigator.of(context, rootNavigator: true).pop();
+                        }),
+                  ),
+                ),
+              )),
+          Expanded(child: widgets[selectedIdx.value]),
         ],
       ),
     );
