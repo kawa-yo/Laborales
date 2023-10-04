@@ -1,6 +1,8 @@
 flutter_jank_metrics*
 test_exp/
 installers/
+*.pdf
+*.pptx
 
 # Miscellaneous
 *.class

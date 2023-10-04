@@ -19,7 +19,8 @@ class FloatingView extends HookWidget {
   Widget build(BuildContext context) {
     var pos = useState(initialPosition);
 
-    void onDragEnd(Offset globalPos) {
+    void onDragEnd(DraggableDetails details) {
+      var globalPos = details.offset;
       var box = context.findRenderObject() as RenderBox;
       var offset = box.localToGlobal(Offset.zero);
       var localPos = globalPos - offset;
@@ -36,7 +37,7 @@ class FloatingView extends HookWidget {
           top: pos.value.dy,
           child: Draggable(
             feedback: floatingWidget,
-            onDragEnd: (details) => onDragEnd(details.offset),
+            onDragEnd: onDragEnd,
             childWhenDragging: const SizedBox.shrink(),
             child: floatingWidget,
           ),
