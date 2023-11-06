@@ -40,7 +40,7 @@ class LabelerViewModel extends ChangeNotifier {
   }
 
   void addLabel(String label, {Color? color}) {
-    print(_label2color);
+    debugPrint("$_label2color");
     color ??= tenColors.firstWhere(
       (c) => !_label2color.values
           .any((existingColor) => c.value == existingColor.value),

@@ -73,6 +73,13 @@ class LauncherView extends HookConsumerWidget {
                       Text(project.lastModified,
                           style: Theme.of(context).textTheme.labelLarge),
                     ]),
+                    onTap: () {
+                      if (removeMode.value == false) {
+                        ref
+                            .read(launcherProvider)
+                            .onProjectSelected(context, project);
+                      }
+                    },
                     subtitle: Text(project.targetDir.path,
                         style: Theme.of(context).textTheme.labelLarge),
                     trailing: removeMode.value

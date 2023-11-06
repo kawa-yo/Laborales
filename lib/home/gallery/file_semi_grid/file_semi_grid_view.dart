@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/home/gallery/file_grid/file_grid_view.dart';
-import 'package:laborales/home/gallery/file_grid/file_grid_view_model.dart';
 import 'package:laborales/home/gallery/file_semi_grid/file_semi_grid_view_model.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/home/gallery/photo/photo_view_model.dart';
