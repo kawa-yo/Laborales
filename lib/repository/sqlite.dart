@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:laborales/repository/dto/label_dto.dart';
 import 'package:laborales/repository/dto/photo_dto.dart';
 import 'package:sqflite/sqflite.dart';
@@ -39,7 +40,7 @@ Future<List<String>> _existingTables(Database db) async {
     return tables.map((e) => e["name"] as String).toList();
   } on DatabaseException {
     try {
-    var tables = await db.rawQuery("""
+      var tables = await db.rawQuery("""
       SELECT 
           name
       FROM 
@@ -48,15 +49,15 @@ Future<List<String>> _existingTables(Database db) async {
           type ='table' AND 
           name NOT LIKE 'sqlite_%';
     """);
-    return tables.map((e) => e["name"] as String).toList();
-
-    } catch(e) {
+      return tables.map((e) => e["name"] as String).toList();
+    } catch (e) {
       rethrow;
     }
-  } catch(e) {
+  } catch (e) {
     rethrow;
   }
 }
+
 Future<bool> _doesTableExists(Database db, DBTable table) async {
   var tableNames = await _existingTables(db);
   return tableNames.contains(table.name);
@@ -72,9 +73,9 @@ Future<bool> _isTableLatest(Database db, DBTable table) async {
   Set<String> columnNames = columns.map((e) => e["name"] as String).toSet();
   bool isLatest =
       const SetEquality().equals(columnNames, table.columns.toSet());
-  print("existing: $columnNames");
-  print("latest  : ${table.columns.toSet()}");
-  print("is latest: $isLatest");
+  debugPrint("existing: $columnNames");
+  debugPrint("latest  : ${table.columns.toSet()}");
+  debugPrint("is latest: $isLatest");
   return isLatest;
 }
 

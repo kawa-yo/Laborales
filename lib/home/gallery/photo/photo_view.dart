@@ -3,12 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laborales/home/gallery/gallery_view_model.dart';
 import 'package:laborales/home/gallery/photo/photo_view_model.dart';
 import 'package:laborales/home/labeler/labeler_view_model.dart';
-import 'package:laborales/themes/theme.dart';
 
 class PhotoView extends ConsumerWidget {
   final Photo photo;
-  final double width;
-  final double height;
+  final int width;
+  final int height;
   const PhotoView(
     this.photo, {
     super.key,
@@ -50,7 +49,11 @@ class PhotoView extends ConsumerWidget {
                 ),
                 borderRadius: const BorderRadius.all(Radius.circular(5)),
               ),
-              child: Image.file(photo.src, width: width, height: height),
+              child: Image.file(
+                photo.src,
+                cacheWidth: width,
+                cacheHeight: height,
+              ),
             ),
           ),
         ),
